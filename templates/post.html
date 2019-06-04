@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    .post-body{
+        width: 100%;
+    }
+    </style>
+
+      <div class="container conNews indexContainer">
+      <div class="row">
+        <!-- Latest Posts -->
+        <main class="post blog-post col-lg-8"> 
+          <div class="container">
+            <div class="post-single">
+              <div class="post-thumbnail"><img src="{{ current_post.thumbnail.url }}" alt="..." class="img-fluid"></div>
+              <div class="post-details">
+                <div class="post-meta d-flex float-lg-right">
+                    {% if request.user.is_staff %}
+
+                    <a href="{% url 'post-update' id=current_post.id %}"><div class="title">
+                        Update</div></a>
+
+                        <a href="{% url 'post-delete' id=current_post.id  %}"><div class="title">Delete</div></a>
+
+                    {% endif %}
+                </div>
+                <h1>{{ current_post.title }}<a href="#"></a> ( {{ post_rate|floatformat:1 }}/5 )</h1>
+                <div class="post-footer d-flex align-items-center flex-column flex-sm-row"><p class="author d-flex align-items-center flex-wrap">
+                    <div class="title">Autor:</div>
+                    <div class="title"><span>{{ current_post.author }}</span></div></p>
+                  <div class="d-flex align-items-center flex-wrap">       
+                    <div class="date"><i class="fa fa-clock-o"></i>{{ current_post.timestamp|timesince }} temu</div>
+                    <div class="views"><i class="fa fa-eye"></i>{{ current_post.view_count }}</div>
+                    <div class="comments meta-last"><i class="fa fa-comment"></i>{{ current_post.comment_count }}</div>
+                  </div>
+                </div>
+                <div class="post-body">
+                 {{ current_post.content | safe }}
+                </div>
+                <hr/>
+                {% if request.user.is_authenticated %}
+                        <div class="text-center">
+                            <p>Oceń ten artykuł</p>
+                            <form action="." class="form-group" method="GET">
+                                <input type="number" min="0" max="5" name="rate">
+                                <input type="submit" value="Oceń">
+                            </form>
+                        </div>
+                        <div class="text-center text-danger">
+                            <p>{{ msg }}</p>
+                        </div>
+                {% endif %}
+                {% if not request.user.is_authenticated %}
+                    <div class="category text-center">
+                        <a href="/login">Zaloguj się, aby móc ocenić ten artykuł.</a>
+                    </div>
+                {% endif %}
+                <hr/>
+                <div class="post-comments">
+                  <header>
+                    <h3 class="h6">Komentarze<span class="no-of-comments">({{ current_post.comment_count }})</span></h3>
+                  </header>
+
+                    {% for com in comments %}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        <div class="title"><strong>{{ com.author_name }}</strong><span class="date">{{ com.add_date|date }}</span></div>
+                      </div>
+                    </div>
+                    <div class="comment-body">
+                      <p>{{ com.content }}</p>
+                    </div>
+                  </div>
+                    {% endfor %}
+
+
+                </div>
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Zostaw komentarz</h3>
+                  </header>
+                  <form action="." method="POST" class="commenting-form">
+                      {% csrf_token %}
+                    <div class="row">
+                      <div class="form-group col-md-6">
+                        <input type="text" name="username" id="username" placeholder="Pseudonim" class="form-control" required>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <input type="email" name="useremail" id="useremail" placeholder="Adres email (Nie zostanie opublikowany)" class="form-control" required>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <textarea name="comment" id="comment" placeholder="Napisz coś..." class="form-control" required></textarea>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-secondary">Wyślij komentarz</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+        <aside class="col-lg-4 asideMargin">
+          <!-- Widget [Search Bar Widget]-->
+          <div class="widget search">
+            <header>
+              <h3 class="h6">Szukaj newsów:</h3>
+            </header>
+            <form action="{% url 'searchPostResult' %}" class="search-form">
+              <div class="form-group">
+                <input type="text" name="q" placeholder="Szukaj...">
+                <button type="submit" class="submit"><i class="fa fa-search"></i></button>
+              </div>
+            </form>
+          </div>
+          <!-- Widget [Latest Posts Widget]        -->
+          <div class="widget latest-posts">
+            <header>
+              <h3 class="h6">Najnowsze wpisy:</h3>
+            </header>
+            <div class="blog-posts">
+                {% for post in latest_posts %}
+                <a href="{{ post.get_absolute_url }}">
+
+                <div class="item d-flex align-items-center">
+                  <div class="image"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></div>
+                  <div class="title"><strong>{{ post.title }}</strong>
+                    <div class="d-flex align-items-center">
+                      <div class="views"><i class="fa fa-eye"></i>{{ post.view_count }}</div>
+                      <div class="comments"><i class="fa fa-comment"></i>{{ post.comment_count }}</div>
+                    </div>
+                  </div>
+                </div></a>
+                {% endfor %}
+            </div>
+          </div>
+
+        </aside>
+      </div>
+    </div>
+{% endblock content %}

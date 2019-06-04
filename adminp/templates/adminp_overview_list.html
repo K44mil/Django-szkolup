@@ -1,0 +1,10 @@
+					<table id="exampleTable" class="table table-striped table-hover table-bordered">
+						<tbody>
+							{% for entry in entries %}
+								<tr>
+									<td>{{ entry.name }}</td>
+									<td>{{ entry.value }}</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>

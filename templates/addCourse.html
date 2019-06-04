@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+        .przycisk{
+            width: 50%;
+            margin-left: 25%;
+        }
+    </style>
+
+
+<div class="container conNews">
+    <div class="row">
+        <div class="col-md-8 col-lg-7 col-sm-5 mx-auto">
+            <div class="text-center">
+                <h3>Dodaj kurs:</h3>
+            </div>
+
+        <div>
+            <form action="." method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="inputTitle">Nazwa kursu</label>
+                    <input type="text" class="form-control" id="inputTitle" name="title" placeholder="" required autofocus>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                    <label for="inputImage">Miniaturka: </label>
+                    <input type="file" id="inputImage" name="imageInput" placeholder="" required>
+                        </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputOverview">Opis</label>
+                    <textarea class="form-control" id="inputOverview" name="overview" rows="5" cols="30"></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputStartDate">Data rozpoczęcia</label>
+                        <input type="date" class="form-control" id="inputStartDate" name="startDate" required>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputPrice">Cena</label>
+                        <input type="number" class="form-control" min="0" id="inputPrice" name="price">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputMaxStudents">Max. liczba uczestników</label>
+                        <input type="number" class="form-control" id="inputMaxStudents" min="0" name="maxStudents" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputRegion">Województwo</label>
+                        <select class="form-control" id="inputRegion" name="region" required>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputCity">Miasto</label>
+                        <select class="form-control" id="inputCity" name="city" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        <label for="inputCategory">Kategoria</label>
+                        <select class="form-control" id="inputCategory" name="category" required>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputSubcategory">Podkategoria</label>
+                        <select class="form-control" id="inputSubcategory" name="subcategory" required>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="inputCertificate" name="hasCertificate">
+                    <label class="form-check-label" for="inputCertificate">
+                        Możliwość uzyskania certyfikatu
+                    </label>
+                </div>
+
+                <button class="btn btn-lg btn-primary btn-reg btn-block text-uppercase mt-3 przycisk" type="submit">Zatwierdź</button>
+            </form>
+        </div>
+
+        </div>
+    </div>
+</div>
+
+    <script>
+        // Obsłuzenie pol miasta i wojewodztwa
+        var regionsHandle = document.getElementById('inputRegion');
+        var citiesHandle = document.getElementById('inputCity');
+
+        myRegions = [
+            {% for reg in regions %}
+                {
+                    regionName: "{{ reg.name|escapejs }}"
+                },
+            {% endfor %}
+        ];
+
+        myCities = [
+            {% for city in cities %}
+            {
+                cityName: "{{ city.name|escapejs }}",
+                region: "{{ city.region.name|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+        for(i = 0; i < myRegions.length; i++)
+        {
+            var regionOption = new Option(myRegions[i].regionName, myRegions[i].regionName);
+            regionsHandle.options.add(regionOption);
+        }
+
+        function clearInputCity()
+        {
+            while(citiesHandle.options.length)
+            {
+                citiesHandle.options.remove(0);
+            }
+        }
+
+        // Inicjalizacja miast w polu wyboru
+        var selectedRegion = regionsHandle.options[regionsHandle.options.selectedIndex];
+
+            for(i = 0; i < myCities.length; i++)
+            {
+                if(selectedRegion.value == myCities[i].region)
+                {
+                    var cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
+                    citiesHandle.options.add(cityOption);
+                }
+            }
+        // Zmiana pola wyboru miasta z każdą zmianą województwa
+
+        regionsHandle.onchange=function() {
+            clearInputCity();
+            var selectedRegion = regionsHandle.options[regionsHandle.options.selectedIndex];
+
+            for(i = 0; i < myCities.length; i++)
+            {
+                if(selectedRegion.value == myCities[i].region)
+                {
+                    var cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
+                    citiesHandle.options.add(cityOption);
+                }
+            }
+        }
+
+        //
+        var categoryHandle = document.getElementById('inputCategory');
+        var subcategoryHandle = document.getElementById('inputSubcategory');
+
+        myCategories = [
+            {% for cat in categories %}
+                {
+                    categoryName: "{{ cat.name|escapejs }}"
+                },
+            {% endfor %}
+        ];
+
+        mySubcategories = [
+            {% for subcat in subcategories %}
+            {
+                subcatName: "{{ subcat.name|escapejs }}",
+                category: "{{ subcat.category.name|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+        for(i = 0; i < myCategories.length; i++)
+        {
+            var categoryOption = new Option(myCategories[i].categoryName, myCategories[i].categoryName);
+            categoryHandle.options.add(categoryOption);
+        }
+
+        function clearInputSubcategory()
+        {
+            while(subcategoryHandle.options.length)
+            {
+                subcategoryHandle.options.remove(0);
+            }
+        }
+        // Inicjalizacja podkategorii
+        var selectedCategory = categoryHandle.options[categoryHandle.options.selectedIndex];
+
+            for(i = 0; i < mySubcategories.length; i++)
+            {
+                if(selectedCategory.value == mySubcategories[i].category)
+                {
+                    var subcatOption = new Option(mySubcategories[i].subcatName, mySubcategories[i].subcatName);
+                    subcategoryHandle.options.add(subcatOption);
+                }
+            }
+
+        // zmiana podkategorii z każdą zminą kategorii
+        categoryHandle.onchange=function () {
+            clearInputSubcategory();
+            var selectedCategory = categoryHandle.options[categoryHandle.options.selectedIndex];
+
+            for(i = 0; i < mySubcategories.length; i++)
+            {
+                if(selectedCategory.value == mySubcategories[i].category)
+                {
+                    var subcatOption = new Option(mySubcategories[i].subcatName, mySubcategories[i].subcatName);
+                    subcategoryHandle.options.add(subcatOption);
+                }
+            }
+        }
+
+    </script>
+
+
+{% endblock content %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+    #stopka {
+        margin-top: 23vh;
+	}
+	#stopkaText {
+	    padding: 10px;
+	}
+    </style>
+
+    <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Rejestracja</h5>
+
+            <form class="form-signin" action="." method="POST">
+                {% csrf_token %}
+
+              <div class="form-label-group">
+                <input type="email" id="inputEmail" name="email" class="form-control" placeholder="Adres email" required>
+                <label for="inputEmail">Adres email</label>
+              </div>
+
+              <div class="form-label-group">
+                <input type="password" id="inputPassword" name="password" class="form-control" placeholder="Hasło" required>
+                <label for="inputPassword">Hasło</label>
+              </div>
+
+                <div class="form-label-group">
+                <input type="password" id="inputPasswordConfirm" name="passwordConfirm" class="form-control" placeholder="Potwierdź hasło" required>
+                <label for="inputPasswordConfirm">Potwierdź hasło</label>
+              </div>
+                 <div class="text-center text-danger">
+                    {{ msg }}
+                </div>
+
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Zarejestruj się</button>
+            </form>
+              <hr/>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

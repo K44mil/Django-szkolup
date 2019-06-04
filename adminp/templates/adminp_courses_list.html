@@ -1,0 +1,150 @@
+				<div class="row">
+					<div style="width: 100%;" class="inner">
+					<table id="exampleTable" class="table table-striped table-hover table-bordered">
+						<thead>
+							<tr>
+								<th>Operacje</th>
+								
+								<th onclick="courses_sort(this, 1)" class="sortable {% if sortCol == 1 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">ID</th>
+								
+								<th onclick="courses_sort(this, 2)" class="sortable {% if sortCol == 2 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Tytuł</th>
+								
+								<th onclick="courses_sort(this, 3)" class="sortable {% if sortCol == 3 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Data rozpoczęcia</th>
+								
+								<th onclick="courses_sort(this, 5)" class="sortable {% if sortCol == 5 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Cena [PLN]</th>
+								
+								<th onclick="courses_sort(this, 6)" class="sortable {% if sortCol == 6 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Województwo</th>
+								
+								<th onclick="courses_sort(this, 7)" class="sortable {% if sortCol == 7 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Miasto</th>
+								
+								<th onclick="courses_sort(this, 8)" class="sortable {% if sortCol == 8 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Kategoria</th>
+								
+								<th onclick="courses_sort(this, 9)" class="sortable {% if sortCol == 9 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Podkategoria</th>
+								
+								<th onclick="courses_sort(this, 10)" class="sortable {% if sortCol == 10 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Maks. liczba studentów</th>
+								
+								<th onclick="courses_sort(this, 11)" class="sortable {% if sortCol == 11 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Certyfikat</th>
+								
+								<th onclick="courses_sort(this, 12)" class="sortable {% if sortCol == 12 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Liczba wyświetleń</th>
+								
+								<th onclick="courses_sort(this, 13)" class="sortable {% if sortCol == 13 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %} tfit">Liczba komentarzy</th>
+								
+								
+							</tr>
+						</thead>
+						<tbody>
+							{% for entry in entries %}
+								<tr>
+									<td style="text-align: center;" class="tfit">
+										<button class="btn btn-success" type="button" onclick="courses_lookup(this)"><i class="fa fa-search" aria-hidden="true"></i></button>
+										<button class="btn btn-primary" type="button" onclick="courses_showEditModal(this)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+										<button class="btn btn-danger" type="button" onclick="courses_showRemoveModal(this)"><i class="fa fa-trash" aria-hidden="true"></i></button>
+									</td>
+									
+									
+									<td class="tfit" id="1">{{ entry.id }}</td>
+									
+									
+									
+									<td class="tfit" id="2">{{ entry.title }}</td>
+									
+									
+									
+									<td class="tfit" id="3">{{ entry.start_date }}</td>
+									
+									
+									
+									<td class="tfit" id="5">{{ entry.price }}</td>
+									
+									
+									
+									<td class="tfit" id="6">{{ entry.region }}</td>
+									
+									
+									
+									<td class="tfit" id="7">{{ entry.city }}</td>
+									
+									
+									
+									<td class="tfit" id="8">{{ entry.category }}</td>
+									
+									
+									
+									<td class="tfit" id="9">{{ entry.subcategory }}</td>
+									
+									
+									
+									<td class="tfit" id="10">{{ entry.max_students }}</td>
+									
+									
+									
+									<td class="tfit" id="11">{{ entry.has_certificate|yesno:'Tak,Nie' }}</td>
+									
+									
+									
+									<td class="tfit" id="12">{{ entry.views_count }}</td>
+									
+									
+									
+									<td class="tfit" id="13">{{ entry.comment_count }}</td>
+									
+									
+									
+								</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th rowspan="1" colspan="1">Operacje</th>
+								
+								<th rowspan="1" colspan="1">ID</th>
+								
+								<th rowspan="1" colspan="1">Tytuł</th>
+								
+								<th rowspan="1" colspan="1">Data rozpoczęcia</th>
+								
+								<th rowspan="1" colspan="1">Cena [PLN]</th>
+								
+								<th rowspan="1" colspan="1">Województwo</th>
+								
+								<th rowspan="1" colspan="1">Miasto</th>
+								
+								<th rowspan="1" colspan="1">Kategoria</th>
+								
+								<th rowspan="1" colspan="1">Podkategoria</th>
+								
+								<th rowspan="1" colspan="1">Maks. liczba studentów</th>
+								
+								<th rowspan="1" colspan="1">Certyfikat</th>
+								
+								<th rowspan="1" colspan="1">Liczba wyświetleń</th>
+								
+								<th rowspan="1" colspan="1">Liczba komentarzy</th>
+								
+								
+							</tr>
+						</tfoot>
+					</table>
+					</div>
+				</div>
+				
+				<div style="padding-top: 15px;" class="row">
+					
+					<div style="padding-left: 0px;" class="col">
+						<div class="dataTables_info" id="selectedColumn_info" role="status" aria-live="polite">Wyświetlono od {{ count_from }} do {{ count_to }} z {{ count_all }} wpisów</div>
+					</div>
+					
+					
+					<div style="padding-right: 0px;" class="col">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination pagination-sm justify-content-end">
+								<li {% if not prev is None %}style="cursor: pointer;"{% endif %} class="page-item {% if prev is None %}disabled{% endif %}"><a class="page-link" {% if not prev is None %}onclick="courses_onPage({{ prev }})"{% endif %} tabindex="-1"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+								{% for page in pages %}
+								<li {% if not page.active %}style="cursor: pointer;"{% endif %} class="page-item {{ page.active|yesno:'active,' }}"><a class="page-link" {% if not page.active %}onclick="courses_onPage({{ page.num }})"{% endif %}>{{ page.num }}</a></li>
+								{% endfor %}
+								<li {% if not next is None %}style="cursor: pointer;"{% endif %} class="page-item {% if next is None %}disabled{% endif %}"><a class="page-link" {% if not next is None %}onclick="courses_onPage({{ next }})"{% endif %}><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>
+				

@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+     body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+        .btn-logout {
+            width: 40%;
+            margin-left: 30%;
+        }
+         #stopka {
+	    margin-top: 38vh;
+	}
+	#stopkaText {
+	    padding: 10px;
+	}
+    </style>
+
+    <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Twój profil</h5>
+
+              {% if request.user.role == 0 %}
+              <form class="form-signin" action="/studentProfile" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Twoje dane</button>
+            </form>
+                  <form class="form-signin" action="/yourCourses" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Twoje kursy</button>
+            </form>
+              {% endif %}
+
+            {% if request.user.role == 1 %}
+              <form class="form-signin" action="/companyProfile" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Twoje dane</button>
+            </form>
+                <form class="form-signin" action="/yourCourses" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Twoje kursy</button>
+            </form>
+                <form class="form-signin" action="/addCourse" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Dodaj nowy kurs</button>
+            </form>
+
+              {% endif %}
+
+
+
+            <form class="form-signin" action="/logout" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3 btn-logout" type="submit">Wyloguj</button>
+            </form>
+
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

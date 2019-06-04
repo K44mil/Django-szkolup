@@ -1,0 +1,112 @@
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Tytuł:</p>
+							</div>
+							<div class="col">
+								
+								<input id="1" type="text" class="form-control" placeholder="" value="{{ entry.title }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Data rozpoczęcia:</p>
+							</div>
+							<div class="col">
+								
+								<input id="2" type="date" class="form-control" value="{{ entry.start_date }}"/>
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Cena [PLN]:</p>
+							</div>
+							<div class="col">
+								
+								<input id="4" type="text" class="form-control" placeholder="" value="{{ entry.price }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Województwo:</p>
+							</div>
+							<div class="col">
+								
+								<input id="5" type="text" class="form-control" placeholder="" value="{{ entry.region }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Miasto:</p>
+							</div>
+							<div class="col">
+								
+								<input id="6" type="text" class="form-control" placeholder="" value="{{ entry.city }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Kategoria:</p>
+							</div>
+							<div class="col">
+								
+								<input id="7" type="text" class="form-control" placeholder="" value="{{ entry.category }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Podkategoria:</p>
+							</div>
+							<div class="col">
+								
+								<input id="8" type="text" class="form-control" placeholder="" value="{{ entry.subcategory }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Maks. liczba studentów:</p>
+							</div>
+							<div class="col">
+								
+								<input id="9" type="text" class="form-control" placeholder="" value="{{ entry.max_students }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Certyfikat:</p>
+							</div>
+							<div class="col">
+								
+								<select id="10" name="selectedColumn_length" aria-controls="selectedColumn" class="custom-select custom-select-sm form-control form-control-sm">
+									<option value="1" {{ entry.has_certificate|yesno:'selected,' }}>Tak</option>
+									<option value="0" {{ entry.has_certificate|yesno:',selected' }}>Nie</option>
+								</select>
+								
+								
+							</div>
+						</div>
+						

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+        <div class="container conNews indexContainer">
+      <div class="row">
+        <h2>Wyniki wyszukiwania:</h2>
+        <main class="posts-listing col-lg-12">
+          <div class="container">
+            <div class="row">
+              <!-- post -->
+
+                {% for post in queryset %}
+
+              <div class="post col-xl-4">
+                <div class="post-thumbnail"><a href="{{ post.get_absolute_url }}"><img src="{{ post.thumbnail.url }}" alt="..." class="img-fluid"></a></div>
+                <div class="post-details">
+                  <div class="post-meta d-flex justify-content-between">
+
+                    <div class="category"></div>
+                  </div><a href="{{ post.get_absolute_url }}">
+                    <h3 class="h4">{{ post.title }}</h3></a>
+                  <p class="text-muted">{{ post.overview }}</p>
+                  <footer class="post-footer d-flex align-items-center"><p class="author d-flex align-items-center flex-wrap">
+                      <div class="title">Autor:</div>
+                      <div class="title"><span>{{ post.author }}</span></div></p>
+                    <div class="date"><i class="fa fa-clock-o"></i>{{ post.timestamp|timesince }} temu</div>
+                    <div class="comments meta-last"><i class="fa fa-comment"></i>{{ post.comment_count }}</div>
+                  </footer>
+                </div>
+              </div>
+
+                {% endfor %}
+            </div>
+
+
+
+        {% comment %}
+
+
+        <section class="featured-posts no-padding-top">
+      <div class="container index-container conNews">
+        <!-- Post-->
+      <h2>Wyniki wyszukiwania:</h2>
+        {% for post in queryset %}
+
+        <div class="row d-flex align-items-stretch">
+
+
+          <div class="image col-lg-5 post-result"><img src="{{ post.thumbnail.url }}" alt="..."></div>
+
+
+          <div class="text col-lg-7">
+            <div class="text-inner d-flex align-items-center">
+              <div class="content">
+                <header class="post-header">
+                  <a href="{{ post.get_absolute_url }}">
+                    <h2 class="h4">{{ post.title }}</h2></a>
+                </header>
+                <p>{{ post.overview }}</p>
+                <footer class="post-footer d-flex align-items-center"><p class="author d-flex align-items-center flex-wrap">
+                    <div class="title">Autor:</div>
+                    <div class="title"><span>{{ post.author }}</span></div></p>
+                  <div class="date"><i class="fa fa-clock-o"></i>{{ post.timestamp|timesince }} temu</div>
+                  <div class="comments"><i class="fa fa-comment"></i>{{ post.comment_count }}</div>
+                </footer>
+              </div>
+            </div>
+          </div>
+
+        </div>
+            <hr />
+        {% endfor %}
+
+      </div>
+      {% endcomment %}
+    </section>
+     <!-- Pagination -->
+            {% if queryset.has_other_pages %}
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-template d-flex justify-content-center">
+              {% if queryset.has_previous %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+              {% endif %}
+              {% if queryset.has_previous %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.previous_page_number }}{% if q %}&q={{ q }}{% endif %}" class="page-link">{{ queryset.previous_page_number}}</a></li>
+              {% endif %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.number }}{% if q %}&q={{ q }}{% endif %}" class="page-link active">{{ queryset.number }}</a></li>
+                {% if queryset.has_next %}
+                    <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="page-link">{{ queryset.next_page_number}}</a></li>
+                {% endif %}
+                  {% if queryset.has_next %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ queryset.next_page_number }}{% if q %}&q={{ q }}{% endif %}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                  {% endif %}
+              </ul>
+            </nav>
+            {% endif %}
+
+            </div>
+        </main>
+    </div>
+    </div>
+
+
+
+{% endblock content %}
+{% comment %}<a href="{{ result.get_absolute_url }}">{{ result.title }}</a>{% endcomment %}

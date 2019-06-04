@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+    <style>
+        button {
+            width: 50%;
+            margin-left: 25%;
+        }
+
+    </style>
+
+
+<div class="col-4 offset-4 conNews">
+<div class="text-center">
+    <h3>{{ title }}</h3>
+</div>
+
+    {{ form.media }}
+
+<form method="POST" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" type="submit">Zatwierdź</button>
+</form>
+
+</div>
+
+
+{% endblock content %}

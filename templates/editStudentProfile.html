@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+    </style>
+
+     <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Twoje dane:</h5>
+              
+            <form class="form-signin" method="POST" action=".">
+                {% csrf_token %}
+              <div class="form-label-group">
+                <input type="text" id="inputName" name="studentName" class="form-control" placeholder="Imię" pattern="[A-Za-ząćęłńóśźżĄĘŁŃÓŚŹŻ]+" required autofocus>
+                <label for="inputName">Imię</label>
+              </div>
+
+              <div class="form-label-group">
+                <input type="text" id="inputSurname" name="studentSurname" class="form-control" placeholder="Nazwisko" pattern="[A-Za-ząćęłńóśźżĄĘŁŃÓŚŹŻ]+" required>
+                <label for="inputSurname">Nazwisko</label>
+              </div>
+
+                <div class="form-label-group">
+                <input type="text" id="inputCity" name="studentCity" class="form-control" placeholder="Miasto" pattern="[A-Za-ząćęłńóśźżĄĘŁŃÓŚŹŻ]+" required>
+                <label for="inputCity">Miasto</label>
+              </div>
+
+                <div class="form-label-group">
+                <input type="text" id="inputStreet" name="studentStreet" class="form-control" placeholder="Ulica" pattern="[A-Za-ząćęłńóśźżĄĘŁŃÓŚŹŻ]+" required>
+                <label for="inputStreet">Ulica</label>
+              </div>
+
+                <div class="form-label-group">
+                <input type="text" id="inputHouseNumber" name="studentHouseNumber" class="form-control" placeholder="Numer domu" maxlength="20" pattern="[0-9]+" required>
+                <label for="inputHouseNumber">Numer budynku</label>
+              </div>
+
+                <div class="form-label-group">
+                <input type="text" id="inputFlatNumber" name="studentFlatNumber" class="form-control" placeholder="Numer lokalu" maxlength="20" pattern="[0-9]+">
+                <label for="inputFlatNumber">Numer lokalu</label>
+              </div>
+
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Zatwierdź</button>
+            </form>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

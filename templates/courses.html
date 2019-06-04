@@ -1,0 +1,390 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+		body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+		.body2 {
+			color: #777;
+		}
+		.bg-1 {
+			//background: #555586;//#2d2d30;
+			//background-image: url("background0.jpg");
+			//background-repeat: no-repeat;
+			//background-position: center bottom;
+			//background-size: cover;
+			color: #bdbdbd;
+		}
+		.colorx1 {
+			//background: #F00;
+		}
+		.colorx2 {
+			//background: #FF0;
+		}
+		.colorx3 {
+			//background: #0F0;
+		}
+		.containerx2 {
+			//padding: 150px 10px;
+			padding-top: 150px;
+			padding-bottom: 50px;
+			//padding-left: 250px;
+			//padding-right: 250px;
+			padding-left: 13%;
+			padding-right: 13%;
+		}
+		.containerx4 {
+			background-color: #ddddddee;
+			//padding: 150px 10px;
+			padding-top: 20px;
+			padding-bottom: 20px;
+			//padding-left: 250px;
+			//padding-right: 250px;
+		}
+		.c2p {
+			padding-bottom: 80px;
+		}
+		.flRight {
+			float: right;
+			margin-top: 10px;
+			margin-right: 10px;
+		}
+		.fl2 {
+			margin-right: 10px;
+		}
+		.svg path {
+			fill: #000;
+		}
+		.ssg {
+			//fill: #F00;
+			//filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg) brightness(118%) contrast(119%);
+			filter: invert(100%) sepia(0%) saturate(7377%) hue-rotate(191deg) brightness(115%) contrast(101%);
+		}
+
+        .img-course
+        {
+            max-width: 14rem;
+            max-height: 14rem;
+        }
+
+        #pag {
+            margin-top: 10px;
+        }
+	</style>
+
+
+<div class="flex-container containerx2">
+    <form method="GET" action=".">
+        {% csrf_token %}
+	<div class="row">
+		<div class="col-12 pt-md-2 px-md-2 colorx3">
+			<div class="input-group mb-3">
+				{% if title is None or title == ''%}<input type="text" class="form-control" placeholder="Wpisz słowo kluczowe..." name="title">{% endif %}
+                {% if not title is None%}<input type="text" class="form-control" placeholder="{{ title }}" value="{{ title }}" name="title">{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-3 bd-sidebar pt-md-2 px-md-2 colorx1">
+			<ul class="list-group">
+				<li class="list-group-item list-group-item-light">
+					<div class="container">
+					    <div class="row mb-sm-1">
+							<h6>Kategoria:</h6>
+						</div>
+						<div class="row mb-sm-4">
+							<select class="custom-select" id="inputCategory" name="category">
+                                 <option value="Wybierz...">Wybierz...</option>
+                                {% if not category is None %} <option value="{{ category }}" selected>{{ category }}</option>{% endif %}
+							</select>
+						</div>
+
+                        <div class="row mb-sm-1">
+							<h6>Podkategoria:</h6>
+						</div>
+                        <div class="row mb-sm-4">
+							<select class="custom-select" id="inputSubcategory" name="subcategory">
+                                {% if subcategory is None %}<option value="Wybierz...">Wybierz...</option>{% endif %}
+                                {% if not subcategory is None %}<option value="{{ subcategory }}" selected>{{ subcategory }}</option>{% endif %}
+							</select>
+						</div>
+						<!-- @@@@@@@@@@@@@@@@@@ -->
+						<div class="row mb-sm-1">
+							<h6>Cena:</h6>
+						</div>
+						<div class="row mb-sm-4">
+							<div class="input-group">
+								<input type="number" min="0"  class="form-control" {% if minPrice is None or minPrice == '' %} placeholder="od" {% endif %} {% if not minPrice is None %} value="{{ minPrice }}" {% endif %}   id="minPrice" name="minPrice">
+								<input type="number" min="0"  class="form-control" {% if maxPrice is None or maxPrice == '' %} placeholder="do" {% endif %} {% if not maxPrice is None %} value="{{ maxPrice }}" {% endif %} id="maxPrice" name="maxPrice">
+							</div>
+						</div>
+						<!-- @@@@@@@@@@@@@@@@@@ -->
+						<div class="row mb-sm-1">
+							<h6>Data rozpoczęcia:</h6>
+						</div>
+						<div class="row mb-sm-4">
+							<div class="input-group">
+								<input type="date" class="form-control" {% if minStartDate is None %} value="" {% endif %} {% if not minStartDate is None %} value="{{ minStartDate }}" {% endif %}  id="minStartDate" name="minStartDate">
+								<input type="date" class="form-control" {% if maxStartDate is None %} value="" {% endif %} {% if not maxStartDate is None %} value="{{ maxStartDate }}" {% endif %} id="maxStartDate" name="maxStartDate">
+							</div>
+						</div>
+						<!-- @@@@@@@@@@@@@@@@@@ -->
+						<div class="row mb-sm-1">
+							<h6>Województwo:</h6>
+						</div>
+						<div class="row mb-sm-4">
+							<select class="custom-select" id="inputRegion" name="region">
+                                {% if region is None %}<option value="Wybierz...">Wybierz...</option>{% endif %}
+                                {% if not region is None %}<option value="{{ region }}">{{ region }}</option>{% endif %}
+							</select>
+						</div>
+                        <!-- @@@@@@@@@@@@@@@@@@ -->
+						<div class="row mb-sm-1">
+							<h6>Miejscowość:</h6>
+						</div>
+						<div class="row mb-sm-4">
+							<select class="custom-select" id="inputCity" name="city">
+                                <option value="Wybierz...">Wybierz...</option>
+                                {% if not city is None %}<option value="{{ city }}">{{ city }}</option>{% endif %}
+							</select>
+						</div>
+						<!-- @@@@@@@@@@@@@@@@@@ -->
+                        <div class="row mb-sm-1">
+							<h6>Certyfikat:</h6>
+						</div>
+						<div class="row mb-sm-4">
+								<div class="custom-control custom-checkbox mb-3">
+									{% if not certTrue == 'on' %}<input type="checkbox" class="custom-control-input" id="checkCertificateTrue" name="certificateTrue" onclick="checkCertificate()">{% endif %}
+                                    {% if certTrue == 'on' %}<input type="checkbox" class="custom-control-input" id="checkCertificateTrue" name="certificateTrue" onclick="checkCertificate()" checked="true">{% endif %}
+									<label class="custom-control-label" for="checkCertificateTrue">Tak</label>
+								</div>
+						</div>
+                        <div class="row mb-sm-4">
+								<div class="custom-control custom-checkbox mb-3">
+									{% if not certFalse == 'on' %}<input type="checkbox" class="custom-control-input" id="checkCertificateFalse" name="certificateFalse" onclick="checkCertificate1()">{% endif %}
+									{% if certFalse == 'on' %}<input type="checkbox" class="custom-control-input" id="checkCertificateFalse" name="certificateFalse" onclick="checkCertificate1()" checked="true">{% endif %}
+                                    <label class="custom-control-label" for="checkCertificateFalse">Nie</label>
+								</div>
+						</div>
+
+
+						<div class="row">
+							<input type="submit" class="btn btn-outline-primary btn-block" value="Szukaj">
+						</div>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+
+		<div class="col-9 py-md-2 px-md-2 bd-content colorx2">
+
+            {% if not courses_list %}
+                <ul class="list-group pt-md-2">
+				    <li class="list-group-item list-group-item-light list-group-item-action">
+                        <div class="text-black-50 text-center">
+                             <h2>Brak wyników wyszukiwania</h2>
+                        </div>
+                    </li>
+                </ul>
+            {% endif %}
+
+            {% for course in courses_list %}
+			<ul class="list-group pt-md-2">
+				<li class="list-group-item list-group-item-light list-group-item-action">
+
+					<div class="container">
+                        <section class="featured-posts no-padding-top">
+						<div class="row mb-sm-2">
+							<a href="{{ course.get_absolute_url }}"><h6>{{ course.title }} {% if course.has_certificate %}<span class="badge badge-primary">Certyfikat</span>{% endif %}</h6></a>
+						</div>
+                        <div class="row mb-sm-2">
+							<div class="title">{{ course.category }}</div>
+                            <div class="title">{{ course.subcategory }}</div>
+						</div>
+
+						<div class="row mb-sm-2">
+                            <a href="{{ course.get_absolute_url }}">
+                            <div class="col-3 mb-sm-2 float-left"><img class="img-fluid img-course" src="{{ course.thumbnail.url }}" alt="..."></div></a>
+                            <div class="col mb-sm-2">{{ course.overview }}</div>
+
+						</div>
+                        <footer class="post-footer d-flex align-items-center">
+                                <p class="title">Woj. {{ course.region }}</p>
+                                <p class="title">{{ course.city }}</p>
+                                <p class="title">{{ course.price }} zł</p>
+                        </footer>
+
+                        </section>
+					</div>
+
+				</li>
+			</ul>
+			{% endfor %}
+
+            <!-- Pagination -->
+            <div id="pag">
+            <nav aria-label="Page navigation example">
+              <ul class="pagination pagination-template d-flex justify-content-center">
+              {% if courses_list.has_previous %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ courses_list.previous_page_number }}{% if title %}&title={{ title }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if subcategory %}&subcategory={{ subcategory }}{% endif %}{% if minPrice %}&minPrice={{ minPrice }}{% endif %}{% if maxPrice %}&maxPrice={{ maxPrice }}{% endif %}{% if minStartDate %}&minStartDate={{ minStartDate }}{% endif %}{% if maxStartDate %}&maxStartDate={{ maxStartDate }}{% endif %}{% if region %}&region={{ region }}{% endif %}{% if city %}&city={{ city }}{% endif %}{% if certTrue %}&certificateTrue={{ certTrue }}{% endif %}{% if certFalse %}&certificateFalse={{ certFalse }}{% endif %}" class="page-link"> <i class="fa fa-angle-left"></i></a></li>
+              {% endif %}
+              {% if courses_list.has_previous %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ courses_list.previous_page_number }}{% if title %}&title={{ title }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if subcategory %}&subcategory={{ subcategory }}{% endif %}{% if minPrice %}&minPrice={{ minPrice }}{% endif %}{% if maxPrice %}&maxPrice={{ maxPrice }}{% endif %}{% if minStartDate %}&minStartDate={{ minStartDate }}{% endif %}{% if maxStartDate %}&maxStartDate={{ maxStartDate }}{% endif %}{% if region %}&region={{ region }}{% endif %}{% if city %}&city={{ city }}{% endif %}{% if certTrue %}&certificateTrue={{ certTrue }}{% endif %}{% if certFalse %}&certificateFalse={{ certFalse }}{% endif %}" class="page-link">{{ courses_list.previous_page_number}}</a></li>
+              {% endif %}
+                {% if courses_list %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ courses_list.number }}{% if title %}&title={{ title }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if subcategory %}&subcategory={{ subcategory }}{% endif %}{% if minPrice %}&minPrice={{ minPrice }}{% endif %}{% if maxPrice %}&maxPrice={{ maxPrice }}{% endif %}{% if minStartDate %}&minStartDate={{ minStartDate }}{% endif %}{% if maxStartDate %}&maxStartDate={{ maxStartDate }}{% endif %}{% if region %}&region={{ region }}{% endif %}{% if city %}&city={{ city }}{% endif %}{% if certTrue %}&certificateTrue={{ certTrue }}{% endif %}{% if certFalse %}&certificateFalse={{ certFalse }}{% endif %}" class="page-link active">{{ courses_list.number }}</a></li>
+                {% endif %}
+                {% if courses_list.has_next %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ courses_list.next_page_number }}{% if title %}&title={{ title }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if subcategory %}&subcategory={{ subcategory }}{% endif %}{% if minPrice %}&minPrice={{ minPrice }}{% endif %}{% if maxPrice %}&maxPrice={{ maxPrice }}{% endif %}{% if minStartDate %}&minStartDate={{ minStartDate }}{% endif %}{% if maxStartDate %}&maxStartDate={{ maxStartDate }}{% endif %}{% if region %}&region={{ region }}{% endif %}{% if city %}&city={{ city }}{% endif %}{% if certTrue %}&certificateTrue={{ certTrue }}{% endif %}{% if certFalse %}&certificateFalse={{ certFalse }}{% endif %}" class="page-link">{{ courses_list.next_page_number}}</a></li>
+                {% endif %}
+                  {% if courses_list.has_next %}
+                <li class="page-item"><a href="?{{ page_request_var }}={{ courses_list.next_page_number }}{% if title %}&title={{ title }}{% endif %}{% if category %}&category={{ category }}{% endif %}{% if subcategory %}&subcategory={{ subcategory }}{% endif %}{% if minPrice %}&minPrice={{ minPrice }}{% endif %}{% if maxPrice %}&maxPrice={{ maxPrice }}{% endif %}{% if minStartDate %}&minStartDate={{ minStartDate }}{% endif %}{% if maxStartDate %}&maxStartDate={{ maxStartDate }}{% endif %}{% if region %}&region={{ region }}{% endif %}{% if city %}&city={{ city }}{% endif %}{% if certTrue %}&certificateTrue={{ certTrue }}{% endif %}{% if certFalse %}&certificateFalse={{ certFalse }}{% endif %}" class="page-link"> <i class="fa fa-angle-right"></i></a></li>
+                  {% endif %}
+              </ul>
+            </nav>
+            </div>
+		</div>
+
+</div>
+    </form>
+</div>
+
+
+    <script>
+
+        //checkbox certificate
+
+
+        function checkCertificate() {
+            var certificateFalseHandle = document.getElementById('checkCertificateFalse');
+
+            if(certificateFalseHandle.checked == true)
+                certificateFalseHandle.checked = false;
+        }
+
+        function checkCertificate1() {
+            var certificateTrueHandle = document.getElementById('checkCertificateTrue');
+
+            if(certificateTrueHandle.checked == true)
+                certificateTrueHandle.checked = false;
+        }
+
+        // Obsłuzenie pol miasta i wojewodztwa
+        var regionsHandle = document.getElementById('inputRegion');
+        var citiesHandle = document.getElementById('inputCity');
+
+        myRegions = [
+            {% for reg in regions %}
+                {
+                    regionName: "{{ reg.name|escapejs }}"
+                },
+            {% endfor %}
+        ];
+
+        myCities = [
+            {% for city in cities %}
+            {
+                cityName: "{{ city.name|escapejs }}",
+                region: "{{ city.region.name|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+        for(i = 0; i < myRegions.length; i++)
+        {
+            var regionOption = new Option(myRegions[i].regionName, myRegions[i].regionName);
+            regionsHandle.options.add(regionOption);
+        }
+
+        function clearInputCity()
+        {
+            while(citiesHandle.options.length)
+            {
+                citiesHandle.options.remove(0);
+            }
+        }
+
+        // Zmiana pola wyboru miasta z każdą zmianą województwa
+
+        regionsHandle.onchange=function() {
+            clearInputCity();
+            var selectedRegion = regionsHandle.options[regionsHandle.options.selectedIndex];
+
+            var cityOption = new Option('Wybierz...', 'Wybierz...');
+            citiesHandle.options.add(cityOption);
+
+            for(i = 0; i < myCities.length; i++)
+            {
+                if(selectedRegion.value == myCities[i].region)
+                {
+                    var cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
+                    citiesHandle.options.add(cityOption);
+                }
+            }
+        }
+
+        //
+        var categoryHandle = document.getElementById('inputCategory');
+        var subcategoryHandle = document.getElementById('inputSubcategory');
+
+        myCategories = [
+            {% for cat in categories %}
+                {
+                    categoryName: "{{ cat.name|escapejs }}"
+                },
+            {% endfor %}
+        ];
+
+        mySubcategories = [
+            {% for subcat in subcategories %}
+            {
+                subcatName: "{{ subcat.name|escapejs }}",
+                category: "{{ subcat.category.name|escapejs }}"
+            },
+            {% endfor %}
+        ];
+
+        for(i = 0; i < myCategories.length; i++)
+        {
+            var categoryOption = new Option(myCategories[i].categoryName, myCategories[i].categoryName);
+            categoryHandle.options.add(categoryOption);
+        }
+
+        function clearInputSubcategory()
+        {
+            while(subcategoryHandle.options.length)
+            {
+                subcategoryHandle.options.remove(0);
+            }
+        }
+        // zmiana podkategorii z każdą zminą kategorii
+        categoryHandle.onchange=function () {
+            clearInputSubcategory();
+            var selectedCategory = categoryHandle.options[categoryHandle.options.selectedIndex];
+
+            var subcatOption = new Option('Wybierz...', 'Wybierz...');
+            subcategoryHandle.options.add(subcatOption);
+
+            for(i = 0; i < mySubcategories.length; i++)
+            {
+                if(selectedCategory.value == mySubcategories[i].category)
+                {
+                    var subcatOption = new Option(mySubcategories[i].subcatName, mySubcategories[i].subcatName);
+                    subcategoryHandle.options.add(subcatOption);
+                }
+            }
+        }
+
+    </script>
+
+
+{% endblock content %}

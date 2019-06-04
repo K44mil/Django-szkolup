@@ -1,0 +1,343 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+	<div style="max-width: 1400px;" class="container conNews">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+			<!-- <li class="breadcrumb-item active" aria-current="page"><a href="#">Panel administratora</a></li> -->
+			<li class="breadcrumb-item">Panel administratora</li>
+		  </ol>
+		</nav>
+	  <br>
+	  <!-- Nav tabs -->
+	  <ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-overview">Podsumowanie</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link active" data-toggle="tab" href="#tab-users">Kursanci</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-company">Firmy szkoleniowe</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-admins">Administratorzy</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-news">Aktualności</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-courses">Kursy</a>
+		</li>
+	  </ul>
+
+	  <!-- Tab panes -->
+	  <div class="tab-content">
+		<div style="max-width: 1400px;" id="tab-users" class="container tab-pane active"><br>
+	
+		<div style="max-width: 1400px;" class="container">
+			
+			<div class="row">
+				<div class="col" style="display: inline-block;">
+					<label>Pokaż <select id="userCountSelect" style="width: auto;" name="selectedColumn_length" aria-controls="selectedColumn" class="custom-select custom-select-sm form-control form-control-sm">
+						<option value="1" selected>10</option>
+						<option value="2">25</option>
+						<option value="3">50</option>
+						<option value="4">100</option>
+					</select> wpisów</label>
+				</div>
+				<div class="col" style="text-align: right;">
+					<label>Szukaj: </label>
+					<div style="float: right; width: auto;" class="input-group">
+						<!-- <input style="width: auto; display: inline-block;" type="search" class="form-control form-control-sm" placeholder="" aria-controls="selectedColumn"> -->
+						<input id="userSearchInput" style="width: 180px;" type="search" class="form-control form-control-sm" placeholder="" aria-controls="selectedColumn">
+						<select id="userCategorySelect" style="width: 100px;" class="custom-select custom-select-sm">
+								<option value="1" selected>Wszystko</option>
+								<option value="2">Login</option>
+								<option value="3">Imię</option>
+								<option value="4">Nazwisko</option>
+								<!-- <option value="5">Rola</option> -->
+							</select>
+						<div class="input-group-append">
+							<button id="searchUserButton" class="btn btn-sm btn-primary" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			
+			<!-- a -->
+			
+			<!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter"> -->
+				<!-- Launch demo modal -->
+			  <!-- </button> -->
+			
+			<div id="deleteUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<p id="userDeleteLogin"></p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Nie</button>
+					<!-- <button onclick="removeUser(this)" id="userDeleteLoginButton" type="button" class="btn btn-danger" data-dismiss="modal">Tak</button> -->
+					<button onclick="confirmUserRemoveModal(this)" id="userDeleteLoginButton" type="button" class="btn btn-danger">Tak</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div id="statusModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Status</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<p id="result"></p>
+				  </div>
+				  <div class="modal-footer">
+					<button id="statusButton" type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div id="editUserModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Edycja danych użytkownika</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="editForm" class="container">
+						
+						
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Anuluj</button>
+					<button onclick="confirmUserEdit(this)" type="button" class="btn btn-danger" data-dismiss="modal">Potwierdź</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			
+			
+			<!-- a -->
+			<div id="usersContent">
+				
+			</div>
+		</div>
+		  
+		
+				  
+				  
+		</div>
+		<div id="tab-news" class="container tab-pane fade"><br>
+		  <h3>Menu 1</h3>
+		  <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+		</div>
+		<div id="tab-courses" class="container tab-pane fade"><br>
+		  <h3>Menu 2</h3>
+		  <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p>
+		</div>
+	  </div>
+	</div>
+	
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	
+<script type="text/javascript">
+	currentSearchPhrase = ''
+	currentPage = 1
+	currentCount = 1
+	currentCategory = 1
+	currentSortColumn = 1
+	currentSortOrder = 1
+	
+	removeUserId = 0
+	removeUserLogin = ''
+	editUserId = 0
+	success = false;
+	
+	$(document).ready(function() {
+		
+		//var $sortable = $('.sortable');
+		
+		//$sortable.on('click', );
+		
+		
+		$('#searchUserButton').on('click', onSearchUserClick);
+		
+		
+		
+		$("#usersContent").load("userList");
+		
+	});
+	
+	function sortUsers(th, col){
+		var $sortable = $('.sortable');
+		//var $this = $(this);
+		var $this = $(th);
+		var asc = $this.hasClass('asc');
+		var desc = $this.hasClass('desc');
+		$sortable.removeClass('asc').removeClass('desc');
+		if (desc || (!asc && !desc)) {
+			$this.addClass('asc');
+			currentSortOrder = 1;
+		} else {
+			$this.addClass('desc');
+			currentSortOrder = 0;
+		}
+		currentSortColumn = col;
+		searchUserUrlExecute();
+	}
+	function showUserEditModal(th){
+		var modalObj = $('#editUserModal');
+		var th2 = $(th);
+		var userId = th2.attr("data-userid");
+		editUserId = userId;
+		var url = 'getUserEditForm?userId=' + userId;
+		modalObj.find('.modal-body').find("#editForm").load(url);
+		modalObj.modal('show');
+	}
+	
+	
+	function showUserRemoveModal(th){
+		var modalObj = $('#deleteUserModal');
+		var th2 = $(th);
+		var userId = th2.attr("data-userid");
+		var userLogin = th2.attr("data-login");
+		modalObj.find('.modal-title').text('Usuwanie użytkownika');
+		modalObj.find('.modal-body').find("p#userDeleteLogin").text("Czy na pewno chcesz usunąć użytkownika: " + userLogin);
+		var confirmButton = modalObj.find('.modal-footer').find('#userDeleteLoginButton');
+		removeUserId = userId;
+		removeUserLogin = userLogin;
+		modalObj.modal('show');
+	}
+	
+	function confirmUserEdit(th){
+		var modalObj = $('#editUserModal');
+		var th2 = $(th);
+		var form = modalObj.find('.modal-body').find("#editForm");
+		
+		var query = {};
+		query['userId'] = editUserId;
+		query['email'] = form.find("#1").val();
+		query['fname'] = form.find("#2").val();
+		query['lname'] = form.find("#3").val();
+		query['city'] = form.find("#4").val();
+		query['street'] = form.find("#5").val();
+		query['hnumber'] = form.find("#6").val();
+		query['fnumber'] = form.find("#7").val();
+		
+		$.ajax({
+			type: 'GET',
+			url: 'updateUser',
+			data: query,
+			success: function(data) {
+				checkSuccess(data);
+				if(success){
+					textShow = "Dane użytkownika '" + query['email'] + "' zostały zaktualizowane.";
+				}else{
+					textShow = "Wystąpił błąd podczas aktualizacji użytkownika '" + query['email'] + "'.";
+				}
+				
+				showStatus(modalObj, textShow, success)
+				searchUserUrlExecute();
+			}
+		});
+		
+	}
+	function checkSuccess(data) {
+		success = (data == "1");
+	}
+	function showStatus(mhide, text, flag){
+		var modalObj2 = $('#statusModal');
+		var statusButton = modalObj2.find('.modal-footer').find('button#statusButton');
+		var textField = modalObj2.find('.modal-body').find("p#result");
+		statusButton.removeClass('btn-success').removeClass('btn-danger');
+		if(flag){
+			statusButton.addClass('btn-success');
+			textField.text(text);
+		}else{
+			statusButton.addClass('btn-danger');
+			textField.text(text);
+		}
+		mhide.modal('hide');
+		modalObj2.modal('show');
+	}
+	
+	function confirmUserRemoveModal(th){
+		var modalObj1 = $('#deleteUserModal');
+		var th2 = $(th);
+		
+		
+		var url = 'deleteUser?userId=' + removeUserId;
+		$.get(url, checkSuccess);
+		
+		if(success){
+			textShow = "Użytkownik '" + removeUserLogin + "' został usunięty.";
+		}else{
+			textShow = "Wystąpił błąd podczas usuwania użytkownika '" + removeUserLogin + "'.";
+		}
+		
+		showStatus(modalObj1, textShow, success);
+		searchUserUrlExecute();
+	}
+	
+	function onSearchUserClick(){
+		var searchPhrases = $("#userSearchInput").val();
+		var count = $("#userCountSelect").val();
+		var cat = $("#userCategorySelect").val();
+		
+		currentSearchPhrase = searchPhrases;
+		currentCount = count;
+		currentCategory = cat;
+		searchUserUrlExecute();
+	}
+	function onPage(num){
+		currentPage = num;
+		searchUserUrlExecute();
+	}
+	function searchUserUrlExecute(){
+		/*var url = 'userList?search='+ encodeURIComponent(currentSearchPhrase)
+			+ '&page=' + currentPage + '&display=' + currentCount
+			+ '&filter=' + currentCategory + '&sortcol=' + currentSortColumn
+			+ '&sortord=' + currentSortOrder;
+		$("#usersContent").load(url);
+		*/
+		
+		var query = {};
+		query['search'] = currentSearchPhrase;
+		query['page'] = currentPage;
+		query['display'] = currentCount;
+		query['filter'] = currentCategory;
+		query['sortcol'] = currentSortColumn;
+		query['sortord'] = currentSortOrder;
+		
+		$("#usersContent").load(
+			'userList',
+			$.param(query)
+		);
+	}
+	
+</script>
+	
+
+{% endblock content %}

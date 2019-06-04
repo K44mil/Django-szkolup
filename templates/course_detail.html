@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    .post-body{
+        width: 100%;
+    }
+    .btn-zapiszsie {
+        width: 50%;
+        margin-left: 25%;
+    }
+
+    </style>
+
+      <div class="container conNews indexContainer">
+      <div class="row">
+        <!-- Latest Posts -->
+      <main class="col-lg-2"></main>
+        <main class="post blog-post col-lg-8">
+          <div class="container">
+            <div class="post-single">
+              <div class="post-thumbnail"><img src="{{ current_course.thumbnail.url }}" alt="..." class="img-fluid"></div>
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                  <div class="category"><a>{{ current_course.category }}</a><br><a>{{ current_course.subcategory }}</a></div>
+                </div>
+                <h1>{{ current_course.title }}<a href="#"></a> ( {{ course_rate|floatformat:1 }}/5 )</h1>
+                <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+                    <p><div class="title"><i class="fa fa-briefcase"></i>{{ current_course.company.company_name }}</div></p>
+                  <div class="d-flex align-items-center flex-wrap">
+                    <div class="title"><i class="fa fa-globe"></i>{{ current_course.region }}</div>
+                    <div class="title"><i class="fa fa-building"></i> {{ current_course.city }}</div>
+                    <div class="title">{{ current_course.price }} PLN</div>
+                  </div>
+
+                </div>
+               <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+                  <div class="d-flex align-items-center flex-wrap">
+                    <div class="title">Data rozpoczęcia: {{ current_course.start_date|date }}</div>
+                    <div class="title"><i class="fa fa-male"></i> {{ countStudents }}/{{ current_course.max_students}}</div>
+                  </div>
+
+
+                </div>
+                <div class="post-body">
+                 {{ current_course.overview }}
+                </div>
+                <hr/>
+                    {% if request.user.is_authenticated and request.user.role == 0 and not request.user.is_staff%}
+                        <div class="text-center">
+                            <p>Oceń ten kurs</p>
+                            <form action="." class="form-group" method="GET">
+                                <input type="number" min="0" max="5" name="rate">
+                                <input type="submit" value="Oceń">
+                            </form>
+                        </div>
+                        <div class="text-center text-danger">
+                            <p>{{ msg }}</p>
+                        </div>
+
+                    <form action="{{ current_course.get_save_student_url }}">
+                        <button class="btn btn-lg btn-primary btn-block text-uppercase btn-zapiszsie" type="submit">Zpisz się</button>
+                    </form>
+                    {% endif %}
+                    {% if request.user.is_authenticated and request.user.role == 1%}
+
+                        <div class="category text-center">
+                        <p >Jako podmiot oferujący kursy nie masz możliwości oceny i zapisu.</p>
+                         </div>
+
+                    {% endif %}
+                    {% if not request.user.is_authenticated %}
+                    <div class="category text-center">
+                        <a href="/login" >Zaloguj się, aby mieć możliwość zapisu i oceny kursu.</a>
+                    </div>
+                    {% endif %}
+
+                <hr />
+                <div class="post-comments">
+                  <header>
+                    <h3 class="h6">Komentarze<span class="no-of-comments">({{ current_course.comment_count }})</span></h3>
+                  </header>
+
+                    {% for com in comments %}
+                  <div class="comment">
+                    <div class="comment-header d-flex justify-content-between">
+                      <div class="user d-flex align-items-center">
+                        <div class="title"><strong>{{ com.author_name }}</strong><span class="date">{{ com.add_date|date }}</span></div>
+                      </div>
+                    </div>
+                    <div class="comment-body">
+                      <p>{{ com.content }}</p>
+                    </div>
+                  </div>
+                    {% endfor %}
+
+
+                </div>
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Zostaw komentarz</h3>
+                  </header>
+                  <form action="." method="POST" class="commenting-form">
+                      {% csrf_token %}
+                    <div class="row">
+                      <div class="form-group col-md-6">
+                        <input type="text" name="username" id="username" placeholder="Pseudonim" class="form-control" required>
+                      </div>
+                      <div class="form-group col-md-6">
+                        <input type="email" name="useremail" id="useremail" placeholder="Adres email (Nie zostanie opublikowany)" class="form-control" required>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <textarea name="comment" id="comment" placeholder="Napisz coś..." class="form-control" required></textarea>
+                      </div>
+                      <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-secondary">Wyślij komentarz</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+
+      </div>
+    </div>
+{% endblock content %}

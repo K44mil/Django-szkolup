@@ -1,0 +1,64 @@
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Tytuł:</p>
+							</div>
+							<div class="col">
+								
+								<input id="1" type="text" class="form-control" placeholder="" value="{{ entry.title }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Data dodania:</p>
+							</div>
+							<div class="col">
+								
+								<input id="2" type="date" class="form-control" value="{{ entry.timestamp }}"/>
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Liczba wyświetleń:</p>
+							</div>
+							<div class="col">
+								
+								<input id="3" type="text" class="form-control" placeholder="" value="{{ entry.view_count }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Liczba komentarzy:</p>
+							</div>
+							<div class="col">
+								
+								<input id="4" type="text" class="form-control" placeholder="" value="{{ entry.comment_count }}">
+								
+								
+							</div>
+						</div>
+						
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Wyróżniony:</p>
+							</div>
+							<div class="col">
+								
+								<select id="5" name="selectedColumn_length" aria-controls="selectedColumn" class="custom-select custom-select-sm form-control form-control-sm">
+									<option value="1" {{ entry.featured|yesno:'selected,' }}>Tak</option>
+									<option value="0" {{ entry.featured|yesno:',selected' }}>Nie</option>
+								</select>
+								
+								
+							</div>
+						</div>
+						

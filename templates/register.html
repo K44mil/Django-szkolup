@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+    #stopka {
+	    margin-top: 40vh;
+	}
+	#stopkaText {
+	    padding: 10px;
+	}
+    </style>
+
+    <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Wybierz jedną z opcji:</h5>
+
+            <form class="form-signin" action="/registerStudent">
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Szukam kursu</button>
+            </form>
+
+              <form class="form-signin mt-4" action="/registerCompany">
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Oferuję kurs</button>
+            </form>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock content %}

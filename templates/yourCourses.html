@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+        .btn-wroc
+        {
+            width: 40%;
+            margin-left: 30%;
+            margin-top: 3%;
+        }
+         #stopka {
+	    margin-top: 20vh;
+        }
+        #stopkaText {
+            padding: 10px;
+        }
+        .course a {
+            text-decoration: none;
+            color: #3A3A3A;
+        }
+        .course a:hover {
+            text-decoration: none;
+            color: #000000;
+        }
+        .usun {
+            display: inline;
+        }
+        .course .usun a {
+            display: inline-block;
+            border-radius: 25%;
+            margin-left: 5px;
+            color: #FFFFFF;
+            padding: 3px;
+            background-color: #0000ff;
+        }
+    </style>
+
+     <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            {% if request.user.role == 0 %}
+            <h5 class="card-title text-center">{{ title }}</h5>
+
+                {% for course in courses_query %}
+                    <div class="course text-center">
+                        <a href="{{ course.get_absolute_url }}">{{ course.title }}</a>
+                    </div>
+                {% endfor %}
+
+              <form class="form-signin" action="/userProfil">
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase btn-wroc" type="submit">Wróć</button>
+            </form>
+              {% endif %}
+              {% if request.user.role == 1 %}
+            <h5 class="card-title text-center">{{ title }}</h5>
+
+                {% for course in courses_query %}
+                    <div class="course text-center">
+                        <a href="{{ course.get_absolute_url }}">{{ course.title }}</a><div class="usun"><a  href="{{ course.get_delete_url }}">usuń</a></div>
+                    </div>
+                {% endfor %}
+
+              <form class="form-signin" action="/userProfil">
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase btn-wroc" type="submit">Wróć</button>
+            </form>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

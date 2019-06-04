@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+        .btn-wroc
+        {
+            width: 40%;
+            margin-left: 30%;
+            margin-top: 3%;
+        }
+      #stopka {
+	    margin-top: 20vh;
+	}
+	#stopkaText {
+	    padding: 10px;
+	}
+    </style>
+
+     <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Twoje dane:</h5>
+
+              <p>Nazwa firmy: {{ company.company_name }}</p>
+              <p>Miasto: {{ company.city }}</p>
+              <p>Ulica: {{ company.street }}</p>
+              <p>Numer budynku: {{ company.house_number }}</p>
+              <p>Numer mieszkania: {{ company.flat_number }}</p>
+
+
+            <form class="form-signin" action="/editCompanyProfile">
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Edytuj</button>
+            </form>
+
+              <form class="form-signin" action="/userProfil">
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase btn-wroc" type="submit">Wróć</button>
+            </form>
+              
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

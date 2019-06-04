@@ -1,0 +1,46 @@
+<div id="tab-news" class="container tab-pane fade"><br>
+	
+		<div class="container">
+			
+			<div class="row">
+				<div class="col" style="display: inline-block; padding-left: 0px;">
+					<label>Pokaż <select id="countSelect" style="width: auto;margin-left: 5px;margin-right: 5px;" name="selectedColumn_length" aria-controls="selectedColumn" class="custom-select custom-select-sm form-control form-control-sm">
+						<option value="1" selected>10</option>
+						<option value="2">25</option>
+						<option value="3">50</option>
+						<option value="4">100</option>
+					</select> wpisów</label>
+				</div>
+				<div class="col" style="text-align: right;padding-right: 0px;">
+					<label style="padding-top: 2px;" >Szukaj: </label>
+					<div style="float: right; width: auto;margin-left: 5px;" class="input-group">
+						<input id="searchInput" style="width: 180px;" type="search" class="form-control form-control-sm" placeholder="" aria-controls="selectedColumn">
+						<select id="categorySelect" style="width: 200px;" class="custom-select custom-select-sm">
+								<option value="0" selected>Wszystko</option>
+								
+								<option value="2">ID</option>
+								
+								<option value="4">Tytuł</option>
+								
+								<option value="8">Data dodania</option>
+								
+								<option value="16">Liczba wyświetleń</option>
+								
+								<option value="32">Liczba komentarzy</option>
+								
+								<option value="64">Wyróżniony</option>
+								
+							</select>
+						<div class="input-group-append">
+							<button onclick="news_onSearchClick(this)" class="btn btn-sm btn-primary" type="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+			<div id="content">
+				
+			</div>
+		</div>
+</div>
+		

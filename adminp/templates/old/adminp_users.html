@@ -1,0 +1,68 @@
+				<div class="row">
+					<table id="exampleTable" class="table table-striped table-hover table-bordered">
+						<thead>
+							<tr>
+								<th onclick="sortUsers(this, 1)" class="sortable {% if sortCol == 1 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">ID</th>
+								<th onclick="sortUsers(this, 2)" class="sortable {% if sortCol == 2 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Login / Email</th>
+								<th onclick="sortUsers(this, 3)" class="sortable {% if sortCol == 3 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Imię</th>
+								<th onclick="sortUsers(this, 4)" class="sortable {% if sortCol == 4 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Nazwisko</th>
+								<th onclick="sortUsers(this, 5)" class="sortable {% if sortCol == 5 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Miasto</th>
+								<th onclick="sortUsers(this, 6)" class="sortable {% if sortCol == 6 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Ulica</th>
+								<th onclick="sortUsers(this, 7)" class="sortable {% if sortCol == 7 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Numer domu</th>
+								<th onclick="sortUsers(this, 8)" class="sortable {% if sortCol == 8 %}{% if sortOrd == 1 %}asc{% else %}desc{% endif %}{% endif %}">Numer lokalu</th>
+								<th>Operacje</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for user in users %}
+								<tr>
+									<td>{{ user.id }}</td>
+									<td>{{ user.email }}</td>
+									<td>{{ user.name }}</td>
+									<td>{{ user.surname }}</td>
+									<td>{{ user.city }}</td>
+									<td>{{ user.street }}</td>
+									<td>{{ user.house_number }}</td>
+									<td>{{ user.flat_number }}</td>
+									<td style="text-align: center;">
+										<button class="btn btn-primary" type="button" onclick="showUserEditModal(this)" data-userid="{{ user.id }}" data-login="{{ user.email }}"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+										<button class="btn btn-danger" type="button" onclick="showUserRemoveModal(this)" data-userid="{{ user.id }}" data-login="{{ user.email }}"><i class="fa fa-trash" aria-hidden="true"></i></button>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+						<tfoot>
+							<tr>
+								<th rowspan="1" colspan="1">ID</th>
+								<th rowspan="1" colspan="1">Login / Email</th>
+								<th rowspan="1" colspan="1">Imię</th>
+								<th rowspan="1" colspan="1">Nazwisko</th>
+								<th rowspan="1" colspan="1">Miasto</th>
+								<th rowspan="1" colspan="1">Ulica</th>
+								<th rowspan="1" colspan="1">Numer domu</th>
+								<th rowspan="1" colspan="1">Numer lokalu</th>
+								<th rowspan="1" colspan="1">Operacje</th>
+							</tr>
+						</tfoot>
+					</table>
+				</div>
+				
+				<div class="row">
+					
+					<div class="col">
+						<div class="dataTables_info" id="selectedColumn_info" role="status" aria-live="polite">Wyświetlono od {{ count_from }} do {{ count_to }} z {{ count_all }} wpisów</div>
+					</div>
+					
+					
+					<div class="col">
+						<nav aria-label="Page navigation example">
+							<ul class="pagination pagination-sm justify-content-end">
+								<li {% if not prev is None %}style="cursor: pointer;"{% endif %} class="page-item {% if prev is None %}disabled{% endif %}"><a class="page-link" {% if not prev is None %}onclick="onPage({{ prev }})"{% endif %} tabindex="-1"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+								{% for page in pages %}
+								<li {% if not page.active %}style="cursor: pointer;"{% endif %} class="page-item {{ page.active|yesno:'active,' }}"><a class="page-link" {% if not page.active %}onclick="onPage({{ page.num }})"{% endif %}>{{ page.num }}</a></li>
+								{% endfor %}
+								<li {% if not next is None %}style="cursor: pointer;"{% endif %} class="page-item {% if next is None %}disabled{% endif %}"><a class="page-link" {% if not next is None %}onclick="onPage({{ next }})"{% endif %}><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+							</ul>
+						</nav>
+					</div>
+				</div>

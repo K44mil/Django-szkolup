@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+  <header class="masthead text-center text-white">
+    <div class="masthead-content">
+      <div class="container">
+            <h1 class="masthead-heading mb-0">Zostań lepszą wersją siebie...</h1>
+        <h2 class="masthead-subheading mb-0">...bo już gorzej być nie może.</h2>
+        <a href="/courses" class="btn btn-primary btn-xl rounded-pill mt-5">Szukaj kursu!</a>
+      </div>
+    </div>
+  </header>
+
+
+    <section class="featured-posts no-padding-top">
+      <div class="container index-container">
+        <!-- Post-->
+        {% for post in posts_list %}
+
+        <div class="row d-flex align-items-stretch">
+
+         {% if not forloop.first and not forloop.last %}
+                <div class="image col-lg-5"><img src="{{ post.thumbnail.url }}" alt="..."></div>
+         {% endif %}
+
+          <div class="text col-lg-7">
+            <div class="text-inner d-flex align-items-center">
+              <div class="content">
+                <header class="post-header">
+                  <a href="{{ post.get_absolute_url }}">
+                    <h2 class="h4">{{ post.title }}</h2></a>
+                </header>
+                <p>{{ post.overview }}</p>
+                <footer class="post-footer d-flex align-items-center"><p class="author d-flex align-items-center flex-wrap">
+                    <div class="title">Autor:</div>
+                    <div class="title"><span>{{ post.author.user.first_name }} {{ post.author.user.last_name }}</span></div></p>
+                  <div class="date"><i class="fa fa-clock-o"></i>{{ post.timestamp|timesince }} temu</div>
+                  <div class="comments"><i class="fa fa-comment"></i>{{ post.comment_count }}</div>
+                </footer>
+              </div>
+            </div>
+          </div>
+            {% if forloop.first or forloop.last %}
+          <div class="image col-lg-5"><img src="{{ post.thumbnail.url }}" alt="..."></div>
+            {% endif %}
+        </div>
+
+        {% endfor %}
+
+      </div>
+    </section>
+
+
+{% endblock content %}

@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+	<div class="container conNews">
+		<nav aria-label="breadcrumb">
+		  <ol class="breadcrumb">
+			<!-- <li class="breadcrumb-item active" aria-current="page"><a href="#">Panel administratora</a></li> -->
+			<li class="breadcrumb-item">Panel administratora <a href="../logout/">Wyloguj</a></li>
+		  </ol>
+		</nav>
+	  <br>
+	  <!-- Nav tabs -->
+	  <ul class="nav nav-tabs" role="tablist">
+		<li class="nav-item">
+		  <a class="nav-link active" data-toggle="tab" href="#tab-overview">Podsumowanie</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-users">Kursanci</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-companies">Firmy szkoleniowe</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-admins">Administratorzy</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-courses">Kursy</a>
+		</li>
+		<li class="nav-item">
+		  <a class="nav-link" data-toggle="tab" href="#tab-news">Aktualności</a>
+		</li>
+		<!-- <li class="nav-item"> -->
+		  <!-- <a class="nav-link" data-toggle="tab" href="#tab-test">Test</a> -->
+		<!-- </li> -->
+	  </ul>
+		
+		<!-- modals -->
+		<div id="deleteModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<p id="deleteDesc"></p>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Nie</button>
+					<button id="deleteButton" type="button" class="btn btn-danger">Tak</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div id="statusModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Status</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<p id="result"></p>
+				  </div>
+				  <div class="modal-footer">
+					<button id="statusButton" type="button" class="btn btn-success" data-dismiss="modal">OK</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div id="editModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle"></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="editForm" class="container">
+						
+						
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Anuluj</button>
+					<button id="editButton" type="button" class="btn btn-danger" data-dismiss="modal">Potwierdź</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+		<!-- modals end -->
+
+	  <!-- Tab panes -->
+	  <div class="tab-content">
+		{% include 'adminp_overview_tab.html' %}
+		{% include 'adminp_users_tab.html' %}
+		{% include 'adminp_companies_tab.html' %}
+		{% include 'adminp_admins_tab.html' %}
+		{% include 'adminp_courses_tab.html' %}
+		{% include 'adminp_news_tab.html' %}
+		<!-- <div id="tab-news" class="container tab-pane fade"><br> -->
+		  <!-- <h3>Menu 1</h3> -->
+		  <!-- <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p> -->
+		<!-- </div> -->
+		<!-- <div id="tab-courses" class="container tab-pane fade"><br> -->
+		  <!-- <h3>Menu 2</h3> -->
+		  <!-- <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam.</p> -->
+		<!-- </div> -->
+	  </div>
+	</div>
+	
+<script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+	
+<script src="{% static 'js/adminp.js' %}"></script>
+	
+
+{% endblock content %}
