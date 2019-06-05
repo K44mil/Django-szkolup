@@ -170,6 +170,8 @@ def coursesView(request):
 
     return render(request, 'courses.html', context)
 
+
+
 def courseDetailView(request, id):
 
     course = get_object_or_404(Course, id=id)
@@ -178,20 +180,21 @@ def courseDetailView(request, id):
     countStudents = students.count()
 
     if request.method == 'POST':
-        commentAuthorName = request.POST['username']
-        commentAuthorEmail = request.POST['useremail']
-        commentContent = request.POST['comment']
+        if request.POST['submit'] == 'addComment':
+            commentAuthorName = request.POST['username']
+            commentAuthorEmail = request.POST['useremail']
+            commentContent = request.POST['comment']
 
-        newComment = CourseComment.objects.create(
-            author_name=commentAuthorName,
-            author_email=commentAuthorEmail,
-            content=commentContent,
-            course=course,
-        )
+            newComment = CourseComment.objects.create(
+                author_name=commentAuthorName,
+                author_email=commentAuthorEmail,
+                content=commentContent,
+                course=course,
+            )
 
-        newComment.save()
-        course.comment_count = course.comment_count + 1
-        course.save()
+            newComment.save()
+            course.comment_count = course.comment_count + 1
+            course.save()
 
     comments = CourseComment.objects.filter(course=course)
 
@@ -211,27 +214,29 @@ def courseDetailView(request, id):
 
     msg = ''
 
-    if request.method == 'GET':
-        try:
-            rate = request.GET.get('rate')
-        except:
-            rate = ''
+    if request.method == 'POST':
+        if request.POST['submit'] == 'addRate':
+            try:
+                rate = request.POST['rate']
+            except:
+                rate = ''
 
-        if rate == '' or rate is None:
-            msg = ''
-        else:
-            rateExists = CourseRate.objects.filter(course=course, user=request.user)
-
-            if rateExists:
-                msg = 'Już oceniłeś ten kurs'
+            if rate == '' or rate is None:
+                msg = ''
             else:
-                rateObj = CourseRate.objects.create(
-                    value=rate,
-                    user=request.user,
-                    course=course,
-                )
+                rateExists = CourseRate.objects.filter(course=course, user=request.user)
 
-                rateObj.save()
+                if rateExists:
+                    msg = 'Już oceniłeś ten kurs'
+                else:
+                    rateObj = CourseRate.objects.create(
+                        value=rate,
+                        user=request.user,
+                        course=course,
+                    )
+
+                    rateObj.save()
+                    msg = 'Twoja ocena została zapisana.'
 
     context = {
         'current_course': course,

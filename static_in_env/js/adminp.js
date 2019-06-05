@@ -1,3 +1,4 @@
+msgSendId = 1;
 success = false;
 
 function checkSuccess(data) {
@@ -28,19 +29,156 @@ $(document).ready(function() {
 	admins_searchUrlExecute();
 	courses_searchUrlExecute();
 	news_searchUrlExecute();
+	msg_searchUrlExecute();
 });
 
+
 ////////////////
+
+function admins_add(th){
+	var modalObj = $('#addModal');
+	var th2 = $(th);
+	
+	var form = modalObj.find('.modal-body').find("#editForm");
+	form.find("#1").val('');
+	form.find("#2").val('');
+	form.find("#3").val('');
+	form.find("#4").val('');
+	
+	modalObj.modal('show');
+}
+function admins_addConfirm(th){
+	var modalObj = $('#addModal');
+	var th2 = $(th);
+	var form = modalObj.find('.modal-body').find("#editForm");
+	
+	var query = {};
+	query['login'] = form.find("#1").val();
+	query['password'] = form.find("#2").val();
+	query['first_name'] = form.find("#3").val();
+	query['last_name'] = form.find("#4").val();
+	
+	$.ajax({
+		type: 'GET',
+		url: 'adminsAdd',
+		data: query,
+		success: function(data) {
+			checkSuccess(data);
+			if(success){
+				textShow = 'Administrator ' + form.find("#1").val() + ' został dodany pomyślnie.';
+			}else{
+				textShow = 'Wystąpił błąd podczas dodawania administratora ' + form.find("#1").val() + '.';
+			}
+			
+			showStatus(modalObj, textShow, success)
+			admins_searchUrlExecute();
+		}
+	});
+	
+}
+
+function msgNotify(sid){
+	var query = {};
+	if(sid != null){
+		query['id'] = sid;
+	}
+	$.ajax({
+		type: 'GET',
+		url: 'msgNotify',
+		data: query,
+		success: function(data) {
+			var msgCnt = data;
+			var cont = $('a#msgCounterContainer');
+			cont.empty();
+			if(msgCnt > 0){
+				cont.append("Wiadomości <span id=\"msgCounter\" style=\"margin-left: 5px;\" class=\"badge badge-primary\">" + msgCnt + "</span>");
+			}else{
+				cont.append("Wiadomości");
+			}
+		}
+	});
+}
+
+function msg_showMessageModal(th, id){
+	var modalObj = $('#msgModal');
+	var th2 = $(th);
+	msg_attrObj = th2.parent().parent();
+	
+	msgSendId = id;
+	
+	var unread = msg_attrObj.hasClass('bg-warning');
+	if ( unread ){
+		msg_attrObj.removeClass('bg-warning');
+		/*
+		var msgCnt = $('span#msgCounter').text();
+		msgCnt -= 1;
+		if(msgCnt <= 0){
+			$('span#msgCounter').remove();
+		}else{
+			$('span#msgCounter').text(msgCnt);
+		}*/
+		msgNotify(id);
+	}
+	
+	msgNotify(id);
+	
+	
+	
+	var query = {};
+	query['id'] = id;
+	
+	modalObj.find('.modal-title').text("Wiadomość od " + msg_attrObj.find('#1').text());
+	var editForm = modalObj.find('.modal-body').find("#editForm");
+	editForm.load(
+		'msgSendForm',
+		$.param(query)
+	);
+	
+	modalObj.modal('show');
+}
+function msg_confirmSendModal(th){
+	var modalObj = $('#msgModal');
+	var th2 = $(th);
+	var form = modalObj.find('.modal-body').find("#editForm");
+	
+	var query = {};
+	query['id'] = msgSendId;
+	query['subject'] = form.find("#1").val();
+	query['content'] = form.find("#2").val();
+	
+	$.ajax({
+		type: 'GET',
+		url: 'msgSend',
+		data: query,
+		success: function(data) {
+			checkSuccess(data);
+			if(success){
+				textShow = 'Wiadomość została wysłana.';
+			}else{
+				textShow = 'Wystąpił błąd podczas wysyłania wiadomości';
+			}
+			
+			showStatus(modalObj, textShow, success)
+			msg_searchUrlExecute();
+		}
+	});
+	
+}
+
+///////////////////////////
 
 
 users_currentSearchPhrase = '';
 users_currentPage = 1;
 users_currentCount = 1;
 users_currentCategory = 1;
+
 users_currentSortColumn = 1;
+
 users_currentSortOrder = 1;
 
 users_attrObj = null;
+
 
 
 
@@ -68,6 +206,7 @@ function users_showEditModal(th){
 	confirmButton.on('click', users_confirmEditModal);
 	modalObj.modal('show');
 }
+
 
 
 
@@ -168,6 +307,7 @@ function users_showRemoveModal(th){
 }
 function users_onSearchClick(){
 	var tab = $('#tab-users');
+	users_currentPage = 1;
 	users_currentSearchPhrase = tab.find("#searchInput").val();
 	users_currentCount = tab.find("#countSelect").val();
 	users_currentCategory = tab.find("#categorySelect").val();
@@ -190,15 +330,20 @@ function users_searchUrlExecute(){
 		'usersList',
 		$.param(query)
 	);
+	
+	
 }
 companies_currentSearchPhrase = '';
 companies_currentPage = 1;
 companies_currentCount = 1;
 companies_currentCategory = 1;
+
 companies_currentSortColumn = 1;
+
 companies_currentSortOrder = 1;
 
 companies_attrObj = null;
+
 
 
 
@@ -226,6 +371,7 @@ function companies_showEditModal(th){
 	confirmButton.on('click', companies_confirmEditModal);
 	modalObj.modal('show');
 }
+
 
 
 
@@ -324,6 +470,7 @@ function companies_showRemoveModal(th){
 }
 function companies_onSearchClick(){
 	var tab = $('#tab-companies');
+	companies_currentPage = 1;
 	companies_currentSearchPhrase = tab.find("#searchInput").val();
 	companies_currentCount = tab.find("#countSelect").val();
 	companies_currentCategory = tab.find("#categorySelect").val();
@@ -346,15 +493,20 @@ function companies_searchUrlExecute(){
 		'companiesList',
 		$.param(query)
 	);
+	
+	
 }
 admins_currentSearchPhrase = '';
 admins_currentPage = 1;
 admins_currentCount = 1;
 admins_currentCategory = 1;
+
 admins_currentSortColumn = 1;
+
 admins_currentSortOrder = 1;
 
 admins_attrObj = null;
+
 
 
 
@@ -382,6 +534,7 @@ function admins_showEditModal(th){
 	confirmButton.on('click', admins_confirmEditModal);
 	modalObj.modal('show');
 }
+
 
 
 
@@ -474,6 +627,7 @@ function admins_showRemoveModal(th){
 }
 function admins_onSearchClick(){
 	var tab = $('#tab-admins');
+	admins_currentPage = 1;
 	admins_currentSearchPhrase = tab.find("#searchInput").val();
 	admins_currentCount = tab.find("#countSelect").val();
 	admins_currentCategory = tab.find("#categorySelect").val();
@@ -496,12 +650,16 @@ function admins_searchUrlExecute(){
 		'adminsList',
 		$.param(query)
 	);
+	
+	
 }
 courses_currentSearchPhrase = '';
 courses_currentPage = 1;
 courses_currentCount = 1;
 courses_currentCategory = 1;
+
 courses_currentSortColumn = 1;
+
 courses_currentSortOrder = 1;
 
 courses_attrObj = null;
@@ -519,6 +677,7 @@ function courses_lookup(th){
 	var win = window.open(url, '_blank');
 	win.focus();
 }
+
 
 
 
@@ -544,6 +703,7 @@ function courses_showEditModal(th){
 	confirmButton.on('click', courses_confirmEditModal);
 	modalObj.modal('show');
 }
+
 
 
 
@@ -648,6 +808,7 @@ function courses_showRemoveModal(th){
 }
 function courses_onSearchClick(){
 	var tab = $('#tab-courses');
+	courses_currentPage = 1;
 	courses_currentSearchPhrase = tab.find("#searchInput").val();
 	courses_currentCount = tab.find("#countSelect").val();
 	courses_currentCategory = tab.find("#categorySelect").val();
@@ -670,12 +831,16 @@ function courses_searchUrlExecute(){
 		'coursesList',
 		$.param(query)
 	);
+	
+	
 }
 news_currentSearchPhrase = '';
 news_currentPage = 1;
 news_currentCount = 1;
 news_currentCategory = 1;
+
 news_currentSortColumn = 1;
+
 news_currentSortOrder = 1;
 
 news_attrObj = null;
@@ -803,6 +968,7 @@ function news_showRemoveModal(th){
 }
 function news_onSearchClick(){
 	var tab = $('#tab-news');
+	news_currentPage = 1;
 	news_currentSearchPhrase = tab.find("#searchInput").val();
 	news_currentCount = tab.find("#countSelect").val();
 	news_currentCategory = tab.find("#categorySelect").val();
@@ -825,4 +991,108 @@ function news_searchUrlExecute(){
 		'newsList',
 		$.param(query)
 	);
+	
+	
+}
+msg_currentSearchPhrase = '';
+msg_currentPage = 1;
+msg_currentCount = 1;
+msg_currentCategory = 1;
+
+msg_currentSortColumn = 4;
+
+msg_currentSortOrder = 1;
+
+msg_attrObj = null;
+
+
+
+
+
+
+
+
+
+
+
+
+function msg_confirmRemoveModal(th){
+	var modalObj1 = $('#deleteModal');
+	var th2 = $(th);
+	
+	var query = {};
+	query['id'] = msg_attrObj.find('#1').text();
+	
+	$.ajax({
+		type: 'GET',
+		url: 'msgDelete',
+		data: query,
+		success: function(data) {
+			checkSuccess(data);
+			if(success){
+				textShow = "Wiadomość od '" + msg_attrObj.find('#1').text() + "' została usunięta.";
+			}else{
+				textShow = "Wystąpił błąd podczas usuwania wiadomości od '" + msg_attrObj.find('#1').text() + "'.";
+			}
+			showStatus(modalObj1, textShow, success);
+			msg_searchUrlExecute();
+		}
+	});
+}
+function msg_sort(th, col){
+	var $sortable = $('#tab-msg').find('.sortable');
+	var $this = $(th);
+	var asc = $this.hasClass('asc');
+	var desc = $this.hasClass('desc');
+	$sortable.removeClass('asc').removeClass('desc');
+	if (desc || (!asc && !desc)) {
+		$this.addClass('asc');
+		msg_currentSortOrder = 1;
+	} else {
+		$this.addClass('desc');
+		msg_currentSortOrder = 0;
+	}
+	msg_currentSortColumn = col;
+	msg_searchUrlExecute();
+}
+function msg_showRemoveModal(th){
+	var modalObj = $('#deleteModal');
+	var th2 = $(th);
+	msg_attrObj = th2.parent().parent();
+	modalObj.find('.modal-title').text('Usuwanie wiadmości');
+	modalObj.find('.modal-body').find("p#deleteDesc").text("Czy na pewno chcesz usunąć wiadomość od: " + msg_attrObj.find('#1').text());
+	var confirmButton = modalObj.find('.modal-footer').find('#deleteButton');
+	confirmButton.unbind('click');
+	confirmButton.on('click', msg_confirmRemoveModal);
+	modalObj.modal('show');
+}
+function msg_onSearchClick(){
+	var tab = $('#tab-msg');
+	msg_currentPage = 1;
+	msg_currentSearchPhrase = tab.find("#searchInput").val();
+	msg_currentCount = tab.find("#countSelect").val();
+	msg_currentCategory = tab.find("#categorySelect").val();
+	msg_searchUrlExecute();
+}
+function msg_onPage(num){
+	msg_currentPage = num;
+	msg_searchUrlExecute();
+}
+function msg_searchUrlExecute(){
+	var query = {};
+	query['search'] = msg_currentSearchPhrase;
+	query['page'] = msg_currentPage;
+	query['display'] = msg_currentCount;
+	query['filter'] = msg_currentCategory;
+	query['sortcol'] = msg_currentSortColumn;
+	query['sortord'] = msg_currentSortOrder;
+	
+	$('#tab-msg').find('#content').load(
+		'msgList',
+		$.param(query)
+	);
+	
+	
+	msgNotify(null);
+	
 }

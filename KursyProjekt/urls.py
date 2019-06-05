@@ -19,7 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 from news.views import index, news, post, searchPostResult, post_delete, post_update, post_create
-from .views import register
+from .views import register, sendMessage
 from users.views import registerStudent, registerCompany, loginView, logoutView,\
     userProfilView, editStudentProfileView, editCompanyProfileView, studentProfileView, companyProfileView,\
     yourCoursesView
@@ -52,6 +52,7 @@ urlpatterns = [
     path('course_details/<id>/delete', courseDelete, name='course-delete'),
     path('yourCourses/', yourCoursesView),
 	path('adminp/', include('adminp.urls')),
+    path('sent_message/', sendMessage)
 ]
 
 if settings.DEBUG:

@@ -86,8 +86,8 @@
 	<div class="row">
 		<div class="col-12 pt-md-2 px-md-2 colorx3">
 			<div class="input-group mb-3">
-				{% if title is None or title == ''%}<input type="text" class="form-control" placeholder="Wpisz słowo kluczowe..." name="title">{% endif %}
-                {% if not title is None%}<input type="text" class="form-control" placeholder="{{ title }}" value="{{ title }}" name="title">{% endif %}
+				{% if title is None or title == ''%}<input type="text" class="form-control" value="" placeholder="Wpisz słowo kluczowe..." name="title">{% endif %}
+                {% if title != '' and not title is None %}<input type="text" class="form-control" placeholder="Wpisz słowo kluczowe..." value="{{ title }}" name="title">{% endif %}
 			</div>
 		</div>
 	</div>
@@ -102,8 +102,6 @@
 						</div>
 						<div class="row mb-sm-4">
 							<select class="custom-select" id="inputCategory" name="category">
-                                 <option value="Wybierz...">Wybierz...</option>
-                                {% if not category is None %} <option value="{{ category }}" selected>{{ category }}</option>{% endif %}
 							</select>
 						</div>
 
@@ -112,8 +110,6 @@
 						</div>
                         <div class="row mb-sm-4">
 							<select class="custom-select" id="inputSubcategory" name="subcategory">
-                                {% if subcategory is None %}<option value="Wybierz...">Wybierz...</option>{% endif %}
-                                {% if not subcategory is None %}<option value="{{ subcategory }}" selected>{{ subcategory }}</option>{% endif %}
 							</select>
 						</div>
 						<!-- @@@@@@@@@@@@@@@@@@ -->
@@ -142,8 +138,6 @@
 						</div>
 						<div class="row mb-sm-4">
 							<select class="custom-select" id="inputRegion" name="region">
-                                {% if region is None %}<option value="Wybierz...">Wybierz...</option>{% endif %}
-                                {% if not region is None %}<option value="{{ region }}">{{ region }}</option>{% endif %}
 							</select>
 						</div>
                         <!-- @@@@@@@@@@@@@@@@@@ -->
@@ -152,8 +146,6 @@
 						</div>
 						<div class="row mb-sm-4">
 							<select class="custom-select" id="inputCity" name="city">
-                                <option value="Wybierz...">Wybierz...</option>
-                                {% if not city is None %}<option value="{{ city }}">{{ city }}</option>{% endif %}
 							</select>
 						</div>
 						<!-- @@@@@@@@@@@@@@@@@@ -->
@@ -221,6 +213,8 @@
                                 <p class="title">Woj. {{ course.region }}</p>
                                 <p class="title">{{ course.city }}</p>
                                 <p class="title">{{ course.price }} zł</p>
+                                <p class="title">{{ course.start_date|date:"d-m-y" }}</p>
+                                <p class="title">{{ course.duration }} h</p>
                         </footer>
 
                         </section>
@@ -299,11 +293,40 @@
             {% endfor %}
         ];
 
+        var regionOption = new Option('Wybierz...', 'Wybierz...');
+            regionsHandle.options.add(regionOption);
+
+        actualRegion = { name: "{{ region|escapejs }}"};
+
         for(i = 0; i < myRegions.length; i++)
         {
-            var regionOption = new Option(myRegions[i].regionName, myRegions[i].regionName);
+            regionOption = new Option(myRegions[i].regionName, myRegions[i].regionName);
             regionsHandle.options.add(regionOption);
+            if (actualRegion.name === myRegions[i].regionName)
+                regionsHandle.options.selectedIndex = i+1;
         }
+
+        var cityOption = new Option('Wybierz...', 'Wybierz...');
+            citiesHandle.options.add(cityOption);
+
+        var selectedRegion = regionsHandle.options[regionsHandle.options.selectedIndex];
+
+        actualCity = { name: "{{ city|escapejs }}"};
+        var liczCity = 0;
+
+        for(i = 0; i < myCities.length; i++)
+            {
+                if(selectedRegion.value === myCities[i].region)
+                {
+                    cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
+                    citiesHandle.options.add(cityOption);
+                    liczCity++;
+                    if (actualCity.name === myCities[i].cityName)
+                        citiesHandle.options.selectedIndex = liczCity;
+
+                }
+            }
+
 
         function clearInputCity()
         {
@@ -324,13 +347,13 @@
 
             for(i = 0; i < myCities.length; i++)
             {
-                if(selectedRegion.value == myCities[i].region)
+                if(selectedRegion.value === myCities[i].region)
                 {
-                    var cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
+                    cityOption = new Option(myCities[i].cityName, myCities[i].cityName);
                     citiesHandle.options.add(cityOption);
                 }
             }
-        }
+        };
 
         //
         var categoryHandle = document.getElementById('inputCategory');
@@ -353,11 +376,39 @@
             {% endfor %}
         ];
 
+        actualCategory = { name: "{{ category|escapejs }}" };
+
+        var catOption = new Option('Wybierz...', 'Wybierz...');
+            categoryHandle.options.add(catOption);
+
         for(i = 0; i < myCategories.length; i++)
         {
             var categoryOption = new Option(myCategories[i].categoryName, myCategories[i].categoryName);
             categoryHandle.options.add(categoryOption);
+            if (actualCategory.name === myCategories[i].categoryName)
+                categoryHandle.options.selectedIndex = i+1;
         }
+
+        actualSubcategory = { name: "{{ subcategory|escapejs }}" };
+
+        var subcatOption = new Option('Wybierz...', 'Wybierz...');
+            subcategoryHandle.options.add(subcatOption);
+
+        var selectedCategory = categoryHandle.options[categoryHandle.options.selectedIndex];
+
+        var liczSubcat = 0;
+
+        for(i = 0; i < mySubcategories.length; i++)
+            {
+                if(selectedCategory.value === mySubcategories[i].category)
+                {
+                    subcatOption = new Option(mySubcategories[i].subcatName, mySubcategories[i].subcatName);
+                    subcategoryHandle.options.add(subcatOption);
+                    liczSubcat++;
+                    if (actualSubcategory.name === mySubcategories[i].subcatName)
+                        subcategoryHandle.options.selectedIndex = liczSubcat;
+                }
+            }
 
         function clearInputSubcategory()
         {

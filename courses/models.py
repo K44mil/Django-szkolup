@@ -35,6 +35,7 @@ class Course(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     students = models.ManyToManyField(Student)
     start_date = models.DateTimeField()
+    duration = models.IntegerField(default=0)
     price = models.DecimalField(max_digits=10, decimal_places=2)
     region = models.CharField(max_length=100)
     city = models.CharField(max_length=100)

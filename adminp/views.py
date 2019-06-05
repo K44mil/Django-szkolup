@@ -4,24 +4,34 @@ from django.db.models import Q
 from users.models import *
 from courses.models import *
 from news.models import *
-from django.http import HttpResponse, JsonResponse
+from .models import *
+from django.http import HttpResponse, JsonResponse, Http404
+from django.utils.timezone import now
+from django.core.mail import send_mail
 
+def checkPermissions(request):
+	if not request.user.is_superuser:
+		raise Http404
+def msgNotify(request):
+	checkPermissions(request)
+	sid = request.GET.get('id')
+	if not sid is None:
+		obj = AdminMessage.objects.get(id=sid)
+		obj.read = True
+		obj.save()
+	msgCount = AdminMessage.objects.filter(read=False).count()
+	return HttpResponse(str(msgCount))	
 def index(request):
-	testUsers = [
-		Context({'id': 1, 'login': 'ewwqe123', 'first_name': 'Roman', 'last_name': 'Nowak', 'role': 'Kursant'}),
-		Context({'id': 2, 'login': 'wqeqwas6765', 'first_name': 'Anna', 'last_name': 'Kowalska', 'role': 'Firma szkoleniowa'}),
-	]
-	
+	checkPermissions(request)
+	msgCount = AdminMessage.objects.filter(read=False).count()
 	
 	context = {
+		'messagesCount': msgCount,
 		'admin_page': True,
-		'users': testUsers,
-		'count_from': 20,
-		'count_to': 30,
-		'count_all': 67,
 	}
 	return render(request, 'adminp_index.html', context)
 def overviewList(request):
+	checkPermissions(request)
 	entries = []
 	
 	row = {}
@@ -61,8 +71,92 @@ def overviewList(request):
 
 ###################################
 
+def adminsAdd(request):
+	checkPermissions(request)
+	login = request.GET.get('login')
+	if login is None:
+		return HttpResponse('0')
+	password = request.GET.get('password')
+	if password is None:
+		return HttpResponse('0')
+	first_name = request.GET.get('first_name')
+	if first_name is None:
+		return HttpResponse('0')
+	last_name = request.GET.get('last_name')
+	if last_name is None:
+		return HttpResponse('0')
+	
+	objList = MyUser()
+	objList.username = login
+	objList.email = login
+	objList.set_password(password)
+	objList.first_name = first_name
+	objList.last_name = last_name
+	objList.is_superuser = True
+	objList.is_staff = True
+	objList.is_active = True
+	objList.role = 2
+	objList.date_joined = now()
+	objList.isProfilEdited = False
+	objList.save()
+	
+	return HttpResponse('1')
+	
+def msgSendForm(request):
+	checkPermissions(request)
+	objId = request.GET.get('id')
+	if objId is None:
+		return HttpResponse('0')
+	objList = AdminMessage.objects.get(id = objId)
+	emailX = request.user.email
+	atIdx = emailX.find('@')
+	adminEmail = emailX[:atIdx] + '@szkolup.pythonanywhere.com'
+	context = {
+		'entry': objList,
+		'adminEmail': adminEmail,
+	}
+	return render(request, 'adminp_msg_send.html', context)
+def msgSend(request):
+	checkPermissions(request)
+	objId = request.GET.get('id')
+	if objId is None:
+		return HttpResponse('0')
+	subject = request.GET.get('subject')
+	if subject is None:
+		return HttpResponse('0')
+	content = request.GET.get('content')
+	if content is None:
+		return HttpResponse('0')
+	
+	obj = AdminMessage.objects.get(id = objId)
+	
+	
+	emailX = request.user.email
+	atIdx = emailX.find('@')
+	adminEmail = emailX[:atIdx] + '@szkolup.pythonanywhere.com'
+	
+	
+
+	# send_mail(
+		# subject,
+		# content,
+		# adminEmail,
+		# [obj.email],
+		# fail_silently=False,
+	# )
+	
+	print('Sending ' + adminEmail)
+	print(subject)
+	print(content)
+	
+	obj.delete()
+	
+	return HttpResponse('1')
+###################################
+
 
 def usersList(request):
+	checkPermissions(request)
 	pageNumber = request.GET.get('page')
 	if pageNumber is None:
 		pageNumber = 1
@@ -112,8 +206,6 @@ def usersList(request):
 		
 		queryFilter = Q(pk=None)
 		
-		
-		
 		if (filterCategory & 2) != 0:
 			queryFilter |= Q(id__icontains=searchPhrase)
 		
@@ -137,6 +229,8 @@ def usersList(request):
 		
 		elif (filterCategory & 256) != 0:
 			queryFilter |= Q(flat_number__icontains=searchPhrase)
+		
+		
 		
 		
 		listObj = Student.objects.filter(queryFilter).order_by(sortString)
@@ -192,7 +286,7 @@ def usersList(request):
 	
 	
 	
-		
+	
 	context = {
 		'entries': objList,
 		'pages': pages,
@@ -207,6 +301,7 @@ def usersList(request):
 	return render(request, 'adminp_users_list.html', context)
 
 def usersEditForm(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		objId = 1
@@ -232,7 +327,9 @@ def usersEditForm(request):
 		'entry': objList,
 	}
 	return render(request, 'adminp_users_edit.html', context)
+
 def usersDelete(request):
+	checkPermissions(request)
 	#return HttpResponse('1') #test
 	objId = request.GET.get('id')
 	if objId is None:
@@ -240,7 +337,9 @@ def usersDelete(request):
 	objList = Student.objects.get(id = objId)
 	objList.delete()
 	return HttpResponse('1')
+
 def usersUpdate(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		return HttpResponse('0')
@@ -322,6 +421,7 @@ def usersUpdate(request):
 
 
 def companiesList(request):
+	checkPermissions(request)
 	pageNumber = request.GET.get('page')
 	if pageNumber is None:
 		pageNumber = 1
@@ -371,8 +471,6 @@ def companiesList(request):
 		
 		queryFilter = Q(pk=None)
 		
-		
-		
 		if (filterCategory & 2) != 0:
 			queryFilter |= Q(id__icontains=searchPhrase)
 		
@@ -393,6 +491,8 @@ def companiesList(request):
 		
 		elif (filterCategory & 128) != 0:
 			queryFilter |= Q(flat_number__icontains=searchPhrase)
+		
+		
 		
 		
 		listObj = Company.objects.filter(queryFilter).order_by(sortString)
@@ -446,7 +546,7 @@ def companiesList(request):
 	
 	
 	
-		
+	
 	context = {
 		'entries': objList,
 		'pages': pages,
@@ -461,6 +561,7 @@ def companiesList(request):
 	return render(request, 'adminp_companies_list.html', context)
 
 def companiesEditForm(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		objId = 1
@@ -484,7 +585,9 @@ def companiesEditForm(request):
 		'entry': objList,
 	}
 	return render(request, 'adminp_companies_edit.html', context)
+
 def companiesDelete(request):
+	checkPermissions(request)
 	#return HttpResponse('1') #test
 	objId = request.GET.get('id')
 	if objId is None:
@@ -492,7 +595,9 @@ def companiesDelete(request):
 	objList = Company.objects.get(id = objId)
 	objList.delete()
 	return HttpResponse('1')
+
 def companiesUpdate(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		return HttpResponse('0')
@@ -566,6 +671,7 @@ def companiesUpdate(request):
 
 
 def adminsList(request):
+	checkPermissions(request)
 	pageNumber = request.GET.get('page')
 	if pageNumber is None:
 		pageNumber = 1
@@ -613,9 +719,7 @@ def adminsList(request):
 			filterCategory = 0x7FFFFFFF
 		
 		
-		queryFilter = Q(is_superuser=True)
-		
-		
+		queryFilter = Q(pk=None)
 		
 		if (filterCategory & 2) != 0:
 			queryFilter |= Q(id__icontains=searchPhrase)
@@ -628,6 +732,10 @@ def adminsList(request):
 		
 		elif (filterCategory & 16) != 0:
 			queryFilter |= Q(last_name__icontains=searchPhrase)
+		
+		
+		
+		queryFilter &= Q(is_superuser=True)
 		
 		
 		listObj = MyUser.objects.filter(queryFilter).order_by(sortString)
@@ -675,7 +783,7 @@ def adminsList(request):
 	
 	
 	
-		
+	
 	context = {
 		'entries': objList,
 		'pages': pages,
@@ -690,6 +798,7 @@ def adminsList(request):
 	return render(request, 'adminp_admins_list.html', context)
 
 def adminsEditForm(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		objId = 1
@@ -707,7 +816,9 @@ def adminsEditForm(request):
 		'entry': objList,
 	}
 	return render(request, 'adminp_admins_edit.html', context)
+
 def adminsDelete(request):
+	checkPermissions(request)
 	#return HttpResponse('1') #test
 	objId = request.GET.get('id')
 	if objId is None:
@@ -715,7 +826,9 @@ def adminsDelete(request):
 	objList = MyUser.objects.get(id = objId)
 	objList.delete()
 	return HttpResponse('1')
+
 def adminsUpdate(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		return HttpResponse('0')
@@ -765,6 +878,7 @@ def adminsUpdate(request):
 
 
 def coursesList(request):
+	checkPermissions(request)
 	pageNumber = request.GET.get('page')
 	if pageNumber is None:
 		pageNumber = 1
@@ -814,8 +928,6 @@ def coursesList(request):
 		
 		queryFilter = Q(pk=None)
 		
-		
-		
 		if (filterCategory & 2) != 0:
 			queryFilter |= Q(id__icontains=searchPhrase)
 		
@@ -851,6 +963,8 @@ def coursesList(request):
 		
 		elif (filterCategory & 8192) != 0:
 			queryFilter |= Q(comment_count__icontains=searchPhrase)
+		
+		
 		
 		
 		listObj = Course.objects.filter(queryFilter).order_by(sortString)
@@ -920,7 +1034,7 @@ def coursesList(request):
 	
 	
 	
-		
+	
 	context = {
 		'entries': objList,
 		'pages': pages,
@@ -935,6 +1049,7 @@ def coursesList(request):
 	return render(request, 'adminp_courses_list.html', context)
 
 def coursesEditForm(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		objId = 1
@@ -970,7 +1085,9 @@ def coursesEditForm(request):
 		'entry': objList,
 	}
 	return render(request, 'adminp_courses_edit.html', context)
+
 def coursesDelete(request):
+	checkPermissions(request)
 	#return HttpResponse('1') #test
 	objId = request.GET.get('id')
 	if objId is None:
@@ -978,7 +1095,9 @@ def coursesDelete(request):
 	objList = Course.objects.get(id = objId)
 	objList.delete()
 	return HttpResponse('1')
+
 def coursesUpdate(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		return HttpResponse('0')
@@ -1073,6 +1192,7 @@ def coursesUpdate(request):
 
 
 def newsList(request):
+	checkPermissions(request)
 	pageNumber = request.GET.get('page')
 	if pageNumber is None:
 		pageNumber = 1
@@ -1122,8 +1242,6 @@ def newsList(request):
 		
 		queryFilter = Q(pk=None)
 		
-		
-		
 		if (filterCategory & 2) != 0:
 			queryFilter |= Q(id__icontains=searchPhrase)
 		
@@ -1141,6 +1259,8 @@ def newsList(request):
 		
 		elif (filterCategory & 64) != 0:
 			queryFilter |= Q(featured__icontains=searchPhrase)
+		
+		
 		
 		
 		listObj = Post.objects.filter(queryFilter).order_by(sortString)
@@ -1198,7 +1318,7 @@ def newsList(request):
 	
 	
 	
-		
+	
 	context = {
 		'entries': objList,
 		'pages': pages,
@@ -1213,6 +1333,7 @@ def newsList(request):
 	return render(request, 'adminp_news_list.html', context)
 
 def newsEditForm(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		objId = 1
@@ -1236,7 +1357,9 @@ def newsEditForm(request):
 		'entry': objList,
 	}
 	return render(request, 'adminp_news_edit.html', context)
+
 def newsDelete(request):
+	checkPermissions(request)
 	#return HttpResponse('1') #test
 	objId = request.GET.get('id')
 	if objId is None:
@@ -1244,7 +1367,9 @@ def newsDelete(request):
 	objList = Post.objects.get(id = objId)
 	objList.delete()
 	return HttpResponse('1')
+
 def newsUpdate(request):
+	checkPermissions(request)
 	objId = request.GET.get('id')
 	if objId is None:
 		return HttpResponse('0')
@@ -1295,6 +1420,164 @@ def newsUpdate(request):
 	
 	objList.save()
 	
+	return HttpResponse('1')
+
+
+
+
+
+
+
+
+
+
+def msgList(request):
+	checkPermissions(request)
+	pageNumber = request.GET.get('page')
+	if pageNumber is None:
+		pageNumber = 1
+	displayCount = request.GET.get('display')
+	if displayCount is None:
+		displayCount = 1
+	filterCategory = request.GET.get('filter')
+	if filterCategory is None:
+		filterCategory = 0
+	searchPhrase = request.GET.get('search')
+	if searchPhrase is None:
+		searchPhrase = ''
+	sortColumn = request.GET.get('sortcol')
+	if sortColumn is None:
+		sortColumn = 1
+	sortOrder = request.GET.get('sortord')
+	if sortOrder is None:
+		sortOrder = 1
+	
+	pageNumber = int(pageNumber)
+	displayCount = int(displayCount)
+	filterCategory = int(filterCategory)
+	sortColumn = int(sortColumn)
+	sortOrder = int(sortOrder)
+	
+	countDict = {1: 10, 2: 25, 3: 50, 4: 100}
+	
+	sortDict = { 1: 'name', 2: 'email', 3: 'content', 4: 'time',  }
+	if sortOrder == 1:
+		sortString = ''
+	else:
+		sortString = '-'
+	
+	sortString += sortDict[sortColumn]
+	
+	displayCount = countDict[displayCount]
+	
+	entry_from = (pageNumber-1) * displayCount
+	entry_to = entry_from + displayCount
+	
+	
+	if searchPhrase != '':
+		
+		if filterCategory == 0:
+			filterCategory = 0x7FFFFFFF
+		
+		
+		queryFilter = Q(pk=None)
+		
+		if (filterCategory & 2) != 0:
+			queryFilter |= Q(name__icontains=searchPhrase)
+		
+		elif (filterCategory & 4) != 0:
+			queryFilter |= Q(email__icontains=searchPhrase)
+		
+		elif (filterCategory & 8) != 0:
+			queryFilter |= Q(content__icontains=searchPhrase)
+		
+		elif (filterCategory & 16) != 0:
+			queryFilter |= Q(time__icontains=searchPhrase)
+		
+		
+		
+		
+		listObj = AdminMessage.objects.filter(queryFilter).order_by(sortString)
+	else:
+		
+		listObj = AdminMessage.objects.all().order_by(sortString)
+		
+		
+	
+	allCount = listObj.count()
+	objList = listObj[entry_from:entry_to]
+	
+	entry_to = min(entry_to, allCount)
+	
+	pageRadius = 4
+	
+	pageMax = int(allCount / displayCount) + 1
+	pageLeft = pageNumber - pageRadius
+	pageRight = pageNumber + pageRadius
+	if pageLeft < 1:
+		pageLeft = 1
+	if pageRight > pageMax:
+		pageRight = pageMax
+	
+	pages = []
+	for p in range(pageLeft, pageRight + 1):
+		pages.append(Context({'num': p, 'active': p == pageNumber}))
+	
+	if pageNumber <= 1:
+		prevPage = None
+	else:
+		prevPage = pageNumber - 1
+	if pageNumber >= pageMax:
+		nextPage = None
+	else:
+		nextPage = pageNumber + 1
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	for o in objList:
+	
+		o.time = o.time.strftime("%Y-%m-%d")
+	
+	
+	
+	
+	
+	
+	for o in objList:
+	
+		cont = o.content
+		if len(cont) > 20:
+			o.content = cont[:20] + '...'
+	
+	context = {
+		'entries': objList,
+		'pages': pages,
+		'prev': prevPage,
+		'next': nextPage,
+		'count_from': entry_from + 1,
+		'count_to': entry_to,
+		'count_all': allCount,
+		'sortCol': sortColumn,
+		'sortOrd': sortOrder,
+	}
+	return render(request, 'adminp_msg_list.html', context)
+
+def msgDelete(request):
+	checkPermissions(request)
+	#return HttpResponse('1') #test
+	objId = request.GET.get('id')
+	if objId is None:
+		return HttpResponse('0')
+	objList = AdminMessage.objects.get(id = objId)
+	objList.delete()
 	return HttpResponse('1')
 
 

@@ -33,6 +33,7 @@ urlpatterns = [
 	path('adminsEditForm', adminsEditForm),
 	path('adminsDelete', adminsDelete),
 	path('adminsUpdate', adminsUpdate),
+	path('adminsAdd', adminsAdd),
 	path('coursesList', coursesList),
 	path('coursesEditForm', coursesEditForm),
 	path('coursesDelete', coursesDelete),
@@ -41,5 +42,9 @@ urlpatterns = [
 	path('newsEditForm', newsEditForm),
 	path('newsDelete', newsDelete),
 	path('newsUpdate', newsUpdate),
-	
+	path('msgList', msgList),
+	path('msgDelete', msgDelete),
+	path('msgNotify', msgNotify),
+	path('msgSendForm', msgSendForm),
+	path('msgSend', msgSend),
 ]

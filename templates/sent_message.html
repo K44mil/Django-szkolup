@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+    <style>
+    body {
+			background-image: url({% static 'img/bg.jpg' %});
+			background-repeat: no-repeat;
+			background-attachment: fixed;
+			background-position: center bottom;
+			background-size: cover;
+		}
+    #stopka {
+	    margin-top: 47vh;
+	}
+	#stopkaText {
+	    padding: 10px;
+	}
+    </style>
+
+     <div class="container conNews">
+    <div class="row">
+      <div class="col-sm-9 col-md-7 col-lg-5 mx-auto">
+        <div class="card card-signin my-5">
+          <div class="card-body">
+            <h5 class="card-title text-center">Wiadomość została wysłana pomyślnie.</h5>
+
+              <form class="form-signin" action="/" >
+                {% csrf_token %}
+              <button class="btn btn-lg btn-primary btn-block text-uppercase mt-3" type="submit">Strona główna</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

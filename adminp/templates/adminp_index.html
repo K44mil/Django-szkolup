@@ -9,7 +9,7 @@
 		<nav aria-label="breadcrumb">
 		  <ol class="breadcrumb">
 			<!-- <li class="breadcrumb-item active" aria-current="page"><a href="#">Panel administratora</a></li> -->
-			<li class="breadcrumb-item">Panel administratora <a href="../logout/">Wyloguj</a></li>
+			<li class="breadcrumb-item">Panel administratora  <a href="/logout">Wyloguj</a></li>
 		  </ol>
 		</nav>
 	  <br>
@@ -32,6 +32,9 @@
 		</li>
 		<li class="nav-item">
 		  <a class="nav-link" data-toggle="tab" href="#tab-news">Aktualności</a>
+		</li>
+		<li class="nav-item">
+		  <a id="msgCounterContainer" class="nav-link" data-toggle="tab" href="#tab-msg">Wiadomości{% if messagesCount > 0 %}<span id="msgCounter" style="margin-left: 5px;" class="badge badge-primary">{{ messagesCount }}</span>{% endif %}</a>
 		</li>
 		<!-- <li class="nav-item"> -->
 		  <!-- <a class="nav-link" data-toggle="tab" href="#tab-test">Test</a> -->
@@ -98,6 +101,81 @@
 				</div>
 			  </div>
 			</div>
+			<div id="addModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Dodaj administratora</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="editForm" class="container">					
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Login / Email:</p>
+							</div>
+							<div class="col">
+								<input id="1" type="text" class="form-control" placeholder="example@example.com" value=""/>
+							</div>
+						</div>
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Hasło:</p>
+							</div>
+							<div class="col">
+								<input id="2" type="password" class="form-control" placeholder="Podaj hasło" value=""/>
+							</div>
+						</div>
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Imię:</p>
+							</div>
+							<div class="col">
+								<input id="3" type="text" class="form-control" placeholder="" value="">
+							</div>
+						</div>
+						<div class="row">
+							<div style="padding-top: 5px;" class="col">
+								<p>Nazwisko:</p>
+							</div>
+							<div class="col">
+								<input id="4" type="text" class="form-control" placeholder="" value="">
+							</div>
+						</div>
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Anuluj</button>
+					<button onclick="admins_addConfirm(this)" id="editButton" type="button" class="btn btn-danger" data-dismiss="modal">Potwierdź</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
+			<div id="msgModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-hidden="true">
+			  <div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="exampleModalCenterTitle">Wiadomość od </h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">×</span>
+					</button>
+				  </div>
+				  <div class="modal-body">
+					<div id="editForm" class="container">
+						
+						
+						
+					</div>
+				  </div>
+				  <div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal">Zamknij</button>
+					<button onclick="msg_confirmSendModal(this)" id="editButton" type="button" class="btn btn-danger" data-dismiss="modal">Odpowiedz</button>
+				  </div>
+				</div>
+			  </div>
+			</div>
 		<!-- modals end -->
 
 	  <!-- Tab panes -->
@@ -108,6 +186,7 @@
 		{% include 'adminp_admins_tab.html' %}
 		{% include 'adminp_courses_tab.html' %}
 		{% include 'adminp_news_tab.html' %}
+		{% include 'adminp_msg_tab.html' %}
 		<!-- <div id="tab-news" class="container tab-pane fade"><br> -->
 		  <!-- <h3>Menu 1</h3> -->
 		  <!-- <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p> -->

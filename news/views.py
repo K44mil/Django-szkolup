@@ -102,20 +102,21 @@ def post(request, id):
     latest_post = Post.objects.order_by('-timestamp')[0:3]
 
     if request.method == 'POST':
-        commentAuthorName = request.POST['username']
-        commentAuthorEmail = request.POST['useremail']
-        commentContent = request.POST['comment']
+        if request.POST['submit'] == 'addComment':
+            commentAuthorName = request.POST['username']
+            commentAuthorEmail = request.POST['useremail']
+            commentContent = request.POST['comment']
 
-        newComment = PostComment.objects.create(
-            author_name=commentAuthorName,
-            author_email=commentAuthorEmail,
-            content=commentContent,
-            post=post,
-        )
+            newComment = PostComment.objects.create(
+                author_name=commentAuthorName,
+                author_email=commentAuthorEmail,
+                content=commentContent,
+                post=post,
+            )
 
-        newComment.save()
-        post.comment_count = post.comment_count + 1
-        post.save()
+            newComment.save()
+            post.comment_count = post.comment_count + 1
+            post.save()
 
     comments = PostComment.objects.filter(post=post)
 
@@ -134,27 +135,29 @@ def post(request, id):
 
     msg = ''
 
-    if request.method == 'GET':
-        try:
-            rate = request.GET.get('rate')
-        except:
-            rate = ''
+    if request.method == 'POST':
+        if request.POST['submit'] == 'addRate':
+            try:
+                rate = request.POST['rate']
+            except:
+                rate = ''
 
-        if rate == '' or rate is None:
-            msg = ''
-        else:
-            rateExists = PostRate.objects.filter(post=post, user=request.user)
-
-            if rateExists:
-                msg = 'Już oceniłeś ten artykuł.'
+            if rate == '' or rate is None:
+                msg = ''
             else:
-                rateObj = PostRate.objects.create(
-                    value=rate,
-                    user=request.user,
-                    post=post,
-                )
+                rateExists = PostRate.objects.filter(post=post, user=request.user)
 
-                rateObj.save()
+                if rateExists:
+                    msg = 'Już oceniłeś ten artykuł.'
+                else:
+                    rateObj = PostRate.objects.create(
+                        value=rate,
+                        user=request.user,
+                        post=post,
+                    )
+
+                    rateObj.save()
+                    msg = 'Twoja ocena została zapisana'
 
 
     context = {
